@@ -21,10 +21,13 @@ CC=gcc -Wall -Wextra -std=c11 -O2 -lm -lglpk
 
 all : main
 
-main : main.o
+main : main.o tools.o
 	cd obj/ && $(CC) $^ -o ../bin/$@
 
 main.o : src/main.c
+	$(CC) -c $< -o obj/$@
+
+tools.o : src/tools.c
 	$(CC) -c $< -o obj/$@
 
 doxygen : doc/Doxyfile

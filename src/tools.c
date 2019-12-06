@@ -18,18 +18,51 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "include.h"
 #include "tools.h"
 
-int main()
-{
-	int size = 8;
-	int** m;
-	allocate_matrix(&m,size);
 
-	print_matrix(&m,size);
+void print_matrix(int*** m, int size){
+	int i,j;
 
-	free_matrix(&m,size);
-	return 0;
+	for (i=0; i < size; ++i)
+	{
+		for (j=0; j < size; ++j)
+		{
+			printf("%3d",(*m)[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+int allocate_matrix(int*** m, int size){
+	int i;
+	*m = (int**)malloc(size * sizeof *(*m));
+
+	if(*m == NULL){
+		exit(EXIT_FAILURE);
+	}
+
+	for (i=0;i<size;++i)
+	{
+		(*m)[i] = calloc(size, sizeof *(*m)[i]);
+
+		if((*m)[i] == NULL){
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	return EXIT_SUCCESS;
+}
+
+int free_matrix(int*** m, int size){
+	int i;
+
+	for(i = 0; i < size; i++){
+		free((*m)[i]);
+	}
+
+	free(*m);
+
+	return 1;
 }

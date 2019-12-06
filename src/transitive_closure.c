@@ -18,18 +18,7 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "tools.h"
 
-int main()
-{
-	int size = 8;
-	int** m;
-	allocate_matrix(&m,size);
+int roy_warshall(int** m, int size){
 
-	print_matrix(&m,size);
-
-	free_matrix(&m,size);
-	return 0;
 }

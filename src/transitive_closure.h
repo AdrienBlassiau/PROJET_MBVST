@@ -18,18 +18,24 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "tools.h"
+/** @file transitive_closure.h
+ *
+ * @brief Given a graph, this file computes his transitive closure
+ */
 
-int main()
-{
-	int size = 8;
-	int** m;
-	allocate_matrix(&m,size);
 
-	print_matrix(&m,size);
+#ifndef TRANSITIVE__CLOSURE__H
+#define TRANSITIVE__CLOSURE__H
 
-	free_matrix(&m,size);
-	return 0;
-}
+#include "include.h"
+
+/**
+ * This function computes the transitive closure of a graph
+ * @param  m    The transition matrix of the graph
+ * @param  size The size of the graph
+ * @return      1 if succeed otherwise 0
+ */
+int roy_warshall(int** m, int size);
+
+
+#endif

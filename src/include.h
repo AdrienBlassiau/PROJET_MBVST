@@ -18,18 +18,13 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
+#ifndef __INCLUDE__
+#define __INCLUDE__
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "tools.h"
+#include <string.h>
+#include <errno.h>
+#include <math.h>
 
-int main()
-{
-	int size = 8;
-	int** m;
-	allocate_matrix(&m,size);
-
-	print_matrix(&m,size);
-
-	free_matrix(&m,size);
-	return 0;
-}
+#endif
