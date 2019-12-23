@@ -18,7 +18,20 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
+#include "CUnit/CUnit.h"
+#include "CUnit/Basic.h"
+#include "test_unit.h"
+#include "../src/include.h"
 
-int roy_warshall(int** m, int size){
 
+int main()
+{
+  printf("\n---------------------------\n");
+  printf("\n--------Tests CUnit--------\n");
+  printf("\n---------------------------\n");
+
+  init_test();
+
+  return EXIT_SUCCESS;
+  return 0;
 }

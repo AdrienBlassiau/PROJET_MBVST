@@ -18,18 +18,67 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "include.h"
+#include "graph.h"
 #include "tools.h"
+#include "random_graph.h"
 
 int main()
 {
-	int size = 8;
-	int** m;
-	allocate_matrix(&m,size);
 
-	print_matrix(&m,size);
+	srand(time(NULL));
 
-	free_matrix(&m,size);
+	printf("\n##########################################################\n");
+	printf("########### 1. Génération de graphes aléatoires ##########\n");
+	printf("##########################################################\n\n");
+
+	printf("QUESTION 1 :\n\n");
+	printf(" ==> Voir la fonction roy_warshall\n\n");
+
+	printf("QUESTION 2 :\n\n");
+	printf(" ==> On a le graphe orienté décrit par la matrice suivante : \n\n");
+
+	int size = 4;
+	int m[4][4] = {{0,1,1,0},{1,0,0,1},{0,0,0,1},{0,1,0,0}};
+	Pgraph g = new_graph(size);
+	fill_graph(g,m,1);
+	print_graph(g,0);
+
+	printf(" ==> Sa fermeture transitive est : \n\n");
+
+	Pgraph g_copy = copy_graph(g);
+	roy_warshall(g_copy);
+	print_graph(g_copy,0);
+
+
+	free_graph(g);
+	free_graph(g_copy);
+
+	printf("QUESTION 3 :\n\n");
+	printf(" ==> Voir la fonction test_x_y_connected\n\n");
+
+	printf("QUESTION 4 :\n\n");
+	printf(" ==> Voir la fonction generate_random_graph\n\n");
+
+	printf("QUESTION 5 :\n\n");
+
+	// int tab_size[6] = {20,50,100,400,600,1000};
+	int tab_size[6] = {10,20,30,40,50,60};
+	int i,density;
+
+	for (i = 0; i < 6; i++)
+	{
+		density = compute_density_formula(tab_size[i]);
+		printf("La densité d'un graphe de taille %d est : %d\n",tab_size[i],density);
+		Pgraph gr = generate_random_graph(tab_size[i],density);
+		// printf("number reached : %d\n", run_dfs(gr));
+		// print_graph(gr,1);
+		free_graph(gr);
+	}
+
+	printf("\n##########################################################\n");
+	printf("########## 2.Résolution approchée (heuristique) ##########\n");
+	printf("##########################################################\n\n");
+
 	return 0;
 }

@@ -21,13 +21,28 @@ CC=gcc -Wall -Wextra -std=c11 -O2 -lm -lglpk
 
 all : main
 
-main : main.o tools.o
-	cd obj/ && $(CC) $^ -o ../bin/$@
+main : main.o graph.o tools.o random_graph.o
+	cd obj/ && $(CC) $^ -o ../bin/$@ -lm
+
+test : main_test.o graph.o random_graph.o tools.o test_unit.o
+	cd obj/ && $(CC) $^ -o ../bin/$@ -lm -lcunit
 
 main.o : src/main.c
 	$(CC) -c $< -o obj/$@
 
+main_test.o : test/main_test.c
+	$(CC) -c $< -o obj/$@
+
+graph.o : src/graph.c
+	$(CC) -c $< -o obj/$@
+
+random_graph.o : src/random_graph.c
+	$(CC) -c $< -o obj/$@
+
 tools.o : src/tools.c
+	$(CC) -c $< -o obj/$@
+
+test_unit.o : test/test_unit.c src/include.h
 	$(CC) -c $< -o obj/$@
 
 doxygen : doc/Doxyfile

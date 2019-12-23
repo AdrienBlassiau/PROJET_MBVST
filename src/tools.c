@@ -22,14 +22,14 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "tools.h"
 
 
-void print_matrix(int*** m, int size){
+void print_matrix(int** m, int size){
 	int i,j;
 
 	for (i=0; i < size; ++i)
 	{
 		for (j=0; j < size; ++j)
 		{
-			printf("%3d",(*m)[i][j]);
+			printf("%3d",m[i][j]);
 		}
 		printf("\n");
 	}
@@ -55,14 +55,14 @@ int allocate_matrix(int*** m, int size){
 	return EXIT_SUCCESS;
 }
 
-int free_matrix(int*** m, int size){
+int free_matrix(int** m, int size){
 	int i;
 
 	for(i = 0; i < size; i++){
-		free((*m)[i]);
+		free(m[i]);
 	}
 
-	free(*m);
+	free(m);
 
 	return 1;
 }

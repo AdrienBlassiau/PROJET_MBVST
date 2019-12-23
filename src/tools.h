@@ -18,23 +18,24 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
-/** @file allocate_matrix.h
+/** @file tools.h
  *
- * @brief This file manage all the allocation issue.
+ * @brief This file manages all the matrix functions.
  */
 
 
-#ifndef TRANSITIVE__CLOSURE__H
-#define TRANSITIVE__CLOSURE__H
+#ifndef TOOLS__H
+#define TOOLS__H
 
 #include "include.h"
+
 
 /**
  * This function print the content of a matrix.
  * @param m    The matrix we want to print.
  * @param size The size of the matrix we want to print.
  */
-void print_matrix(int*** m, int size);
+void print_matrix(int** m, int size);
 
 /**
  * This function allocate a matrix, given a size m.
@@ -50,6 +51,6 @@ int allocate_matrix(int*** m, int size);
  * @param  size The size of the allocated matrix.
  * @return		1 if succeed otherwise 0.
  */
-int free_matrix(int*** m, int size);
+int free_matrix(int** m, int size);
 
 #endif
