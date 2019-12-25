@@ -39,6 +39,15 @@ typedef struct graph {
 
 
 /**
+ * This function returns the degree of a vertice of G
+ * @param  g       The graph G.
+ * @param  vertice The vertice we want to get the degree.
+ * @return         The degree of the vertice.
+ */
+int get_vertice_degree(Pgraph g, int vertice);
+
+
+/**
  * This function returns the number of vertices of the graph G.
  * @param  g The graph G.
  * @return   The number of vertices.
@@ -67,6 +76,50 @@ void set_vertices_number(Pgraph g, int size);
 void set_edges_number(Pgraph g, int density);
 
 /**
+ * This function returns thelist of all the edges of an undirected graph G.
+ * @param  g The graph G.
+ * @return   The list of the edges.
+ */
+int** get_edges_list(Pgraph g);
+
+/**
+ * This function adds an edge to the graph G.
+ * @param g The graph G.
+ * @param i The first vertice of the edge.
+ * @param j The second vertice of the edge.
+ */
+void add_edge(Pgraph g, int i, int j);
+
+/**
+ * This function removes an edge to the graph G.
+ * @param g The graph G.
+ * @param i The first vertice of the edge.
+ * @param j The second vertice of the edge.
+ */
+void remove_edge(Pgraph g, int i, int j);
+
+/**
+ * This function returns if an edge is on a graph or not.
+ * @param  edges_list The list of edges of the graph.
+ * @param  size       The number of edges.
+ * @param  i          The first vertice of the edge.
+ * @param  j          The second vertice of the edge.
+ * @return            This function returns 1 if edge (i,j) in on edge_list,
+ *                    O otherwise.
+ */
+int find_edge(int** edges_list, int size, int i, int j);
+
+/**
+ * This function returns the differences between two sets of edges.
+ * @param  edges_list_1 The first set of edges.
+ * @param  size1        The size of the first set of edges.
+ * @param  edges_list_2 The second set of edges.
+ * @param  size2        The size of the second set of edges.
+ * @return              The difference set of edges.
+ */
+int** get_diff_edges_list(int** edges_list_1, int size1, int** edges_list_2, int size2);
+
+/**
  * This function compte the density formula given in the subject.
  * @param  size The number of vertices.
  * @return      The density required.
@@ -80,7 +133,7 @@ int compute_density_formula(int size);
  * @param  connected 	1 if the graph is directed, 0 otherwise.
  * @return   			The graph.
  */
-Pgraph fill_graph(Pgraph g, int m[g->vertices_number][g->vertices_number], int connected);
+Pgraph fill_graph(Pgraph g, void *m, int connected);
 
 /**
  * This function returns a new graph given the number of vertices.

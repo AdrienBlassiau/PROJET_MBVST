@@ -39,11 +39,12 @@ void print_matrix(int** m, int size);
 
 /**
  * This function allocate a matrix, given a size m.
- * @param m    	A null pointer.
- * @param  size The size of the matrix.
- * @return      1 if succeed otherwise 0.
+ * @param m    	 A null pointer.
+ * @param  size1 The size of the matrix.
+ * @param  size2 The size of the sub-matrix.
+ * @return       1 if succeed otherwise 0.
  */
-int allocate_matrix(int*** m, int size);
+int allocate_matrix(int*** m, int size1, int size2);
 
 /**
  * This function frees an allocated matrix in the heap.

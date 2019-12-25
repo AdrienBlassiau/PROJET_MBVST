@@ -44,12 +44,28 @@ int roy_warshall(Pgraph g);
 int run_dfs(Pgraph g);
 
 /**
+ * This function return the number of connected components using dfs.
+ * @param  g The graph G.
+ * @param  v The vertice we want to remove.
+ * @return   The number of connected components.
+ */
+int run_dfs_connected_components(Pgraph g, int v);
+
+/**
  * This function computes a DFS on G recursively.
  * @param  g              The graph G.
  * @param  v              The first vertice reached.
  * @param  reach          The list of reached vertices.
  */
 void dfs(Pgraph g, int v, int* reach);
+
+/**
+ * This function returns the type of a vertice.
+ * @param  g The graph G.
+ * @param  v The vertive we want to get his type.
+ * @return   The type of the vertice v.
+ */
+int get_vertice_type(Pgraph g, int v);
 
 /**
  * This function tests if two vertices belongs to the same strongly connected
@@ -61,6 +77,12 @@ void dfs(Pgraph g, int v, int* reach);
  */
 int test_strongly_connected(Pgraph g, int x, int y);
 
+/**
+ * This function returns the type of each vertice of the graph G.
+ * @param  g The graph G.
+ * @return   The association list of the type of each vertice..
+ */
+int *get_vertice_type_list(Pgraph g);
 
 /**
  * This function tests if two vertices belongs to the same connected

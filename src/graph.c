@@ -22,7 +22,19 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "graph.h"
 #include "tools.h"
 
+int get_vertice_degree(Pgraph g, int vertice){
+	int** am = g->adjacency_matrix;
+	int size = g->vertices_number;
+	int i;
+	int degree = 0;
 
+	for (i = 0; i < size; i++)
+	{
+		degree+=am[vertice][i]?1:0;
+	}
+
+	return degree;
+}
 
 int get_vertices_number(Pgraph g){
 	return g->vertices_number;
@@ -40,6 +52,78 @@ void set_edges_number(Pgraph g, int density){
 	g->edges_number = density;
 }
 
+int** get_edges_list(Pgraph g){
+	int** am = g->adjacency_matrix;
+	int size1 = g->vertices_number;
+	int size2 = g->edges_number;
+	int i,j,k;
+
+	int **edges_list;
+	allocate_matrix(&edges_list,size2,2);
+
+	k=0;
+	for (i = 0; i < size1; i++)
+	{
+		for (j = i; j < size1; j++)
+		{
+			if (am[i][j] == 1)
+			{
+				edges_list[k][0] = i;
+				edges_list[k][1] = j;
+				k++;
+			}
+		}
+	}
+
+	return edges_list;
+}
+
+void add_edge(Pgraph g, int i, int j){
+	int** am = g->adjacency_matrix;
+	am[i][j] = 1;
+	am[j][i] = 1;
+	g->edges_number +=1;
+}
+
+void remove_edge(Pgraph g, int i, int j){
+	int** am = g->adjacency_matrix;
+	am[i][j] = 0;
+	am[j][i] = 0;
+	g->edges_number -= 1;
+}
+
+int find_edge(int** edges_list, int size, int i, int j){
+	int k;
+	for (k = 0; k < size; k++){
+		if ((edges_list[k][0] == i && edges_list[k][1] == j ) ||
+			(edges_list[k][0] == j && edges_list[k][1] == i )){
+			return 1;
+		}
+	}
+	return 0;
+}
+
+int** get_diff_edges_list(int** edges_list_1, int size1, int** edges_list_2, int size2){
+	int i,k,x,y;
+	int **edges_list;
+	allocate_matrix(&edges_list,size1-size2,2);
+
+	k=0;
+	for (i = 0; i < size1; i++){
+		x = edges_list_1[i][0];
+		y = edges_list_1[i][1];
+
+		if (!find_edge(edges_list_2,size2,x,y))
+		{
+			edges_list[k][0] = x;
+			edges_list[k][1] = y;
+			k++;
+		}
+	}
+
+	return edges_list;
+}
+
 int compute_density_formula(int size){
 	return (int)floor((double)((size-1)+2*1.5*ceil(sqrt((double)size))));
 }
@@ -49,7 +133,7 @@ Pgraph new_graph(int n){
 	int** m;
 	Pgraph g = (graph*) malloc(sizeof(graph));
 
-	allocate_matrix(&m,size);
+	allocate_matrix(&m,size,size);
 
 	g->adjacency_matrix = m;
 	g->vertices_number = n;
@@ -58,9 +142,12 @@ Pgraph new_graph(int n){
 	return g;
 }
 
-Pgraph fill_graph(Pgraph g, int m[g->vertices_number][g->vertices_number], int connected){
+Pgraph fill_graph(Pgraph g, void *m, int connected){
 	int** am = g->adjacency_matrix;
 	int size = g->vertices_number;
+
+	int (*arr)[size] = (int (*)[size])m;
+
 	int i,j;
 	int edges_number=0;
 
@@ -68,8 +155,8 @@ Pgraph fill_graph(Pgraph g, int m[g->vertices_number][g->vertices_number], int c
 	{
 		for (j = 0; j < size; j++)
 		{
-			am[i][j] = m[i][j];
-			if (m[i][j] == 1){
+			am[i][j] = arr[i][j];
+			if (arr[i][j]){
 				edges_number ++;
 			}
 		}

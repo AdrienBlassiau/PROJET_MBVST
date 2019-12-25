@@ -17,15 +17,15 @@
 #----------------------------------------------------------------------
 
 
-CC=gcc -Wall -Wextra -std=c11 -O2 -lm -lglpk
+CC=g++ -Wall -Wextra -O2 -lboost_system -lboost_date_time -lboost_thread -lm -lglpk
 
 all : main
 
-main : main.o graph.o tools.o random_graph.o
-	cd obj/ && $(CC) $^ -o ../bin/$@ -lm
+main : main.o graph.o tools.o heuristic.o random_graph.o
+	cd obj/ && $(CC) $^ -o ../bin/$@ -lboost_system -lboost_date_time -lboost_thread -lm
 
-test : main_test.o graph.o random_graph.o tools.o test_unit.o
-	cd obj/ && $(CC) $^ -o ../bin/$@ -lm -lcunit
+test : main_test.o graph.o random_graph.o tools.o heuristic.o test_unit.o
+	cd obj/ && $(CC) $^ -o ../bin/$@ -lboost_system -lboost_date_time -lboost_thread -lm -lcunit
 
 main.o : src/main.c
 	$(CC) -c $< -o obj/$@
@@ -40,6 +40,9 @@ random_graph.o : src/random_graph.c
 	$(CC) -c $< -o obj/$@
 
 tools.o : src/tools.c
+	$(CC) -c $< -o obj/$@
+
+heuristic.o : src/heuristic.c
 	$(CC) -c $< -o obj/$@
 
 test_unit.o : test/test_unit.c src/include.h

@@ -52,6 +52,17 @@ void test_copy_graph(void);
 
 void test_clean_graph(void);
 
+void test_vertice_degree(void);
+
+void test_edges_list(void);
+
+void test_add_edge(void);
+
+void test_remove_edge(void);
+
+void test_find_edge(void);
+
+void test_diff_edges_list(void);
 
 /* ########################################################## */
 /* ################# RANDOM_GRAPH.C TESTS ################### */
@@ -59,8 +70,16 @@ void test_clean_graph(void);
 
 void test_roy_warshall(void);
 
+void test_dfs(void);
+
 void test_if_connected(void);
 
 void test_random_graph(void);
+
+void test_number_connected_components(void);
+
+void test_get_vertice_type(void);
+
+void test_vertice_type_list(void);
 
 #endif

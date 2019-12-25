@@ -22,6 +22,7 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "graph.h"
 #include "tools.h"
 #include "random_graph.h"
+#include "heuristic.h"
 
 int main()
 {
@@ -79,6 +80,8 @@ int main()
 	printf("\n##########################################################\n");
 	printf("########## 2.Résolution approchée (heuristique) ##########\n");
 	printf("##########################################################\n\n");
+
+	run();
 
 	return 0;
 }

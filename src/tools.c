@@ -35,17 +35,17 @@ void print_matrix(int** m, int size){
 	}
 }
 
-int allocate_matrix(int*** m, int size){
+int allocate_matrix(int*** m, int size1, int size2){
 	int i;
-	*m = (int**)malloc(size * sizeof *(*m));
+	*m = (int**)malloc(size1 * sizeof *(*m));
 
 	if(*m == NULL){
 		exit(EXIT_FAILURE);
 	}
 
-	for (i=0;i<size;++i)
+	for (i=0;i<size1;++i)
 	{
-		(*m)[i] = calloc(size, sizeof *(*m)[i]);
+		(*m)[i] = (int*)calloc(size2, sizeof *(*m)[i]);
 
 		if((*m)[i] == NULL){
 			exit(EXIT_FAILURE);

@@ -21,6 +21,7 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "include.h"
 #include "graph.h"
 #include "random_graph.h"
+#include "tools.h"
 
 int roy_warshall(Pgraph g){
 	int w,u,v;
@@ -55,6 +56,25 @@ int run_dfs(Pgraph g){
 	return number_reached;
 }
 
+int run_dfs_connected_components(Pgraph g, int v){
+	int i;
+	int size = g->vertices_number;
+	int* reach = (int *)calloc(size,sizeof(int));
+	int number_components = 0;
+	reach[v] = 1;
+
+
+	for (i = 0; i < size; i++){
+		if (i != v && !reach[i]){
+			dfs(g,i,reach);
+			number_components++;
+		}
+	}
+
+	free(reach);
+	return number_components;
+}
+
 void dfs(Pgraph g, int v, int* reach) {
 	int i;
 	int** am = g->adjacency_matrix;
@@ -66,6 +86,38 @@ void dfs(Pgraph g, int v, int* reach) {
 			dfs(g,i,reach);
 		}
 	}
+}
+
+int get_vertice_type(Pgraph g, int v){
+	int vertice_degree = get_vertice_degree(g,v);
+	int number_components = run_dfs_connected_components(g,v);
+
+	if (vertice_degree == 1 ||(vertice_degree == 2 && number_components == 2)){
+		return 0;
+	}
+	else if(vertice_degree == 2 && number_components == 1){
+		return 1;
+	}
+	else if (vertice_degree >= 3 && number_components <= 2){
+		return 2;
+	}
+	else{
+		return 3;
+	}
+}
+
+int *get_vertice_type_list(Pgraph g){
+	int i;
+	int size = g->vertices_number;
+	int vertice_type = 0;
+	int* vertice_type_list = (int *)calloc(size,sizeof(int));
+
+	for (i = 0; i < size; i++){
+		vertice_type = get_vertice_type(g,i);
+		vertice_type_list[i] = vertice_type;
+	}
+
+	return vertice_type_list;
 }
 
 int test_x_y_strongly_connected(Pgraph g, int x, int y){

@@ -18,15 +18,17 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
-#ifndef __INCLUDE__
-#define __INCLUDE__
+/** @file heuristic.h
+ *
+ * @brief This file manages all the heuristics functions.
+ */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <time.h>
-#include <math.h>
-#include <limits.h>
+#ifndef HEURISTIC__H
+#define HEURISTIC__H
+
+#include "include.h"
+
+
+int run();
 
 #endif
