@@ -64,6 +64,8 @@ void test_find_edge(void);
 
 void test_diff_edges_list(void);
 
+void test_find_min_weight_edges(void);
+
 /* ########################################################## */
 /* ################# RANDOM_GRAPH.C TESTS ################### */
 /* ########################################################## */
@@ -81,5 +83,25 @@ void test_number_connected_components(void);
 void test_get_vertice_type(void);
 
 void test_vertice_type_list(void);
+
+void test_connected_components_vertices(void);
+
+void test_connected_components_two_vertices(void);
+
+void test_get_weight_list(void);
+
+void test_modify_weight_list(void);
+
+/* ########################################################## */
+/* ################### HEURISTIC.C TESTS #################### */
+/* ########################################################## */
+
+void test_stoer_wagner(void);
+
+void test_saturer(void);
+
+void test_departager(void);
+
+void test_changer_type(void);
 
 #endif

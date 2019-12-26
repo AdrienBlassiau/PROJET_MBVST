@@ -43,49 +43,84 @@ int roy_warshall(Pgraph g){
 int run_dfs(Pgraph g){
 	int i;
 	int size = g->vertices_number;
-	int* reach = (int *)calloc(size,sizeof(int));
+	int** reach;
+	allocate_matrix(&reach,size,2);
 	int number_reached = 0;
 
-	dfs(g,0,reach);
+	dfs(g,0,reach,0);
 
 	for (i = 0; i < size; ++i){
-		if (reach[i]) number_reached++;
+		if (reach[i][0]) number_reached++;
 	}
 
-	free(reach);
+	free_matrix(reach,size);
 	return number_reached;
 }
 
 int run_dfs_connected_components(Pgraph g, int v){
 	int i;
 	int size = g->vertices_number;
-	int* reach = (int *)calloc(size,sizeof(int));
+	int** reach;
+	allocate_matrix(&reach,size,2);
 	int number_components = 0;
-	reach[v] = 1;
-
+	reach[v][0] = 1;
+	reach[v][1] = -1;
 
 	for (i = 0; i < size; i++){
-		if (i != v && !reach[i]){
-			dfs(g,i,reach);
+		if (i != v && !reach[i][0]){
+			dfs(g,i,reach,number_components);
 			number_components++;
 		}
 	}
 
-	free(reach);
+	free_matrix(reach,size);
 	return number_components;
 }
 
-void dfs(Pgraph g, int v, int* reach) {
+
+void dfs(Pgraph g, int v, int** reach, int depth) {
 	int i;
 	int** am = g->adjacency_matrix;
 	int size = g->vertices_number;
 
-	reach[v]=1;
+	reach[v][0]=1;
+	reach[v][1]=depth;
+
 	for (i = 0; i < size; i++){
-		if(am[v][i] && !reach[i]) {
-			dfs(g,i,reach);
+		if(am[v][i] && !reach[i][0]) {
+			dfs(g,i,reach,depth);
 		}
 	}
+}
+
+int** connected_components_vertices(Pgraph g){
+	int i;
+	int size = g->vertices_number;
+	int** reach;
+	allocate_matrix(&reach,size,2);
+	int number_components = 0;
+
+	for (i = 0; i < size; i++){
+		if (!reach[i][0]){
+			dfs(g,i,reach,number_components);
+			number_components++;
+		}
+	}
+
+	return reach;
+}
+
+int connected_components_two_vertices(Pgraph g, int i, int j){
+	int size = g->vertices_number;
+	int** reach = connected_components_vertices(g);
+
+	if(reach[i][1] == reach[j][1]){
+		free_matrix(reach,size);
+		return 1;
+	}
+
+	free_matrix(reach,size);
+	return 0;
 }
 
 int get_vertice_type(Pgraph g, int v){
@@ -118,6 +153,30 @@ int *get_vertice_type_list(Pgraph g){
 	}
 
 	return vertice_type_list;
+}
+
+int *get_weight_list(Pgraph g){
+	int i;
+	int size = g->edges_number;
+	int* weight_list = (int *)calloc(size,sizeof(int));
+
+	for (i = 0; i < size; i++){
+		weight_list[i] = 1;
+	}
+
+	return weight_list;
+}
+
+void modify_weight_list(int v, int *weight_list, int **edges_list, int size, int modifier){
+	int i;
+
+	for (i = 0; i < size; i++){
+		if (edges_list[i][0] == v || edges_list[i][1] == v){
+			weight_list[i]+=modifier;
+		}
+	}
+
+	return;
 }
 
 int test_x_y_strongly_connected(Pgraph g, int x, int y){

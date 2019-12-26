@@ -36,6 +36,18 @@ int get_vertice_degree(Pgraph g, int vertice){
 	return degree;
 }
 
+int get_vertice_degree_sum(Pgraph g){
+	int size = g->vertices_number;
+	int i;
+	int sum_degree = 0;
+
+	for (i = 0; i < size; i++){
+		sum_degree += get_vertice_degree(g,i);
+	}
+
+	return sum_degree;
+}
+
 int get_vertices_number(Pgraph g){
 	return g->vertices_number;
 }
@@ -78,6 +90,38 @@ int** get_edges_list(Pgraph g){
 	return edges_list;
 }
 
+int find_min_weight_edges(int* selected_edges_list, int *weight_list, int size){
+	int i;
+	int first=1;
+	int min=0;
+
+	for (i = 0; i < size; i++){
+		if (selected_edges_list[i]){
+			if (first){
+				min = weight_list[i];
+				first = 0;
+			}
+			else{
+				if (weight_list[i] < min){
+					min=weight_list[i];
+				}
+			}
+		}
+	}
+
+	for (i = 0; i < size; i++)
+	{
+		if (selected_edges_list[i] && weight_list[i] == min){
+			selected_edges_list[i]=1;
+		}
+		else{
+			selected_edges_list[i]=0;
+		}
+	}
+
+	return min;
+}
+
 void add_edge(Pgraph g, int i, int j){
 	int** am = g->adjacency_matrix;
 	am[i][j] = 1;
@@ -97,10 +141,10 @@ int find_edge(int** edges_list, int size, int i, int j){
 	for (k = 0; k < size; k++){
 		if ((edges_list[k][0] == i && edges_list[k][1] == j ) ||
 			(edges_list[k][0] == j && edges_list[k][1] == i )){
-			return 1;
+			return k;
 		}
 	}
-	return 0;
+	return -1;
 }
 
 int** get_diff_edges_list(int** edges_list_1, int size1, int** edges_list_2, int size2){
@@ -113,7 +157,7 @@ int** get_diff_edges_list(int** edges_list_1, int size1, int** edges_list_2, int
 		x = edges_list_1[i][0];
 		y = edges_list_1[i][1];
 
-		if (!find_edge(edges_list_2,size2,x,y))
+		if (find_edge(edges_list_2,size2,x,y) == -1)
 		{
 			edges_list[k][0] = x;
 			edges_list[k][1] = y;

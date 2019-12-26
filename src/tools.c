@@ -35,6 +35,15 @@ void print_matrix(int** m, int size){
 	}
 }
 
+void print_array(int* a, int size){
+	int i;
+
+	for (i=0; i < size; ++i)
+	{
+		printf("%3d\n",a[i]);
+	}
+}
+
 int allocate_matrix(int*** m, int size1, int size2){
 	int i;
 	*m = (int**)malloc(size1 * sizeof *(*m));

@@ -46,6 +46,12 @@ typedef struct graph {
  */
 int get_vertice_degree(Pgraph g, int vertice);
 
+/**
+ * This function returns the sum of all degrees
+ * @param  g [description]
+ * @return   [description]
+ */
+int get_vertice_degree_sum(Pgraph g);
 
 /**
  * This function returns the number of vertices of the graph G.
@@ -83,6 +89,15 @@ void set_edges_number(Pgraph g, int density);
 int** get_edges_list(Pgraph g);
 
 /**
+ * This function return the min weight edges of a set.
+ * @param  selected_edges_list The selected edges.
+ * @param  weight_list         The weight of all the edges.
+ * @param  size                The size od selected_edges_list.
+ * @return                     The min weight.
+ */
+int find_min_weight_edges(int* selected_edges_list, int *weight_list, int size);
+
+/**
  * This function adds an edge to the graph G.
  * @param g The graph G.
  * @param i The first vertice of the edge.
@@ -104,8 +119,8 @@ void remove_edge(Pgraph g, int i, int j);
  * @param  size       The number of edges.
  * @param  i          The first vertice of the edge.
  * @param  j          The second vertice of the edge.
- * @return            This function returns 1 if edge (i,j) in on edge_list,
- *                    O otherwise.
+ * @return            This function returns i if edge (i,j) in on edge_list[i],
+ *                    -1 otherwise.
  */
 int find_edge(int** edges_list, int size, int i, int j);
 

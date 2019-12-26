@@ -26,7 +26,7 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "../src/graph.h"
 #include "../src/tools.h"
 #include "../src/random_graph.h"
-
+#include "../src/heuristic.h"
 
 int setup(void)  { return 0; }
 int teardown(void) { return 0; }
@@ -55,7 +55,15 @@ int init_test(void){
 		( NULL == CU_add_test(pSuite, "Test add edge", test_add_edge)) ||
 		( NULL == CU_add_test(pSuite, "Test remove edge", test_remove_edge)) ||
 		( NULL == CU_add_test(pSuite, "Test find edge", test_find_edge)) ||
-		( NULL == CU_add_test(pSuite, "Test diff edges list", test_diff_edges_list)))
+		( NULL == CU_add_test(pSuite, "Test diff edges list", test_diff_edges_list)) ||
+		( NULL == CU_add_test(pSuite, "Test connected components vertices", test_connected_components_vertices)) ||
+		( NULL == CU_add_test(pSuite, "Test connected components two vertices", test_connected_components_two_vertices)) ||
+		( NULL == CU_add_test(pSuite, "Test stoer wagner", test_stoer_wagner)) ||
+		( NULL == CU_add_test(pSuite, "Test test find min weight edges", test_find_min_weight_edges)) ||
+		( NULL == CU_add_test(pSuite, "Test saturer", test_saturer)) ||
+		( NULL == CU_add_test(pSuite, "Test departager", test_departager)) ||
+		( NULL == CU_add_test(pSuite, "Test modify weight list", test_modify_weight_list)) ||
+		( NULL == CU_add_test(pSuite, "Test changer type", test_changer_type)))
 	{
 		CU_cleanup_registry();
 		return CU_get_error();
@@ -463,19 +471,18 @@ void test_find_edge(void){
 
 	int **edges_list = get_edges_list(g);
 
-	CU_ASSERT_EQUAL(find_edge(edges_list,4,0,1),1);
-	CU_ASSERT_EQUAL(find_edge(edges_list,4,1,0),1);
+	CU_ASSERT_EQUAL(find_edge(edges_list,4,0,1),0);
+	CU_ASSERT_EQUAL(find_edge(edges_list,4,1,0),0);
 	CU_ASSERT_EQUAL(find_edge(edges_list,4,0,2),1);
 	CU_ASSERT_EQUAL(find_edge(edges_list,4,2,0),1);
-	CU_ASSERT_EQUAL(find_edge(edges_list,4,2,1),1);
-	CU_ASSERT_EQUAL(find_edge(edges_list,4,1,2),1);
-	CU_ASSERT_EQUAL(find_edge(edges_list,4,2,3),1);
-	CU_ASSERT_EQUAL(find_edge(edges_list,4,3,2),1);
-	CU_ASSERT_EQUAL(find_edge(edges_list,4,3,1),0);
-	CU_ASSERT_EQUAL(find_edge(edges_list,4,1,3),0);
-	CU_ASSERT_EQUAL(find_edge(edges_list,4,3,0),0);
-	CU_ASSERT_EQUAL(find_edge(edges_list,4,0,3),0);
-
+	CU_ASSERT_EQUAL(find_edge(edges_list,4,2,1),2);
+	CU_ASSERT_EQUAL(find_edge(edges_list,4,1,2),2);
+	CU_ASSERT_EQUAL(find_edge(edges_list,4,2,3),3);
+	CU_ASSERT_EQUAL(find_edge(edges_list,4,3,2),3);
+	CU_ASSERT_EQUAL(find_edge(edges_list,4,3,1),-1);
+	CU_ASSERT_EQUAL(find_edge(edges_list,4,1,3),-1);
+	CU_ASSERT_EQUAL(find_edge(edges_list,4,3,0),-1);
+	CU_ASSERT_EQUAL(find_edge(edges_list,4,0,3),-1);
 	free_matrix(edges_list,4);
 	free_graph(g);
 }
@@ -494,12 +501,10 @@ void test_diff_edges_list(void){
 		{1,1,0,1},
 		{0,0,1,0}};
 
-	Pgraph g = new_graph(size);
-	fill_graph(g,m1,0);
+	Pgraph g1 = new_graph(size);
+	fill_graph(g1,m1,0);
 
-	int **edges_list_1 = get_edges_list(g);
-
-	free_graph(g);
+	int **edges_list_1 = get_edges_list(g1);
 
 	size = 4;
 	/*
@@ -514,28 +519,128 @@ void test_diff_edges_list(void){
 		{1,0,0,1},
 		{0,0,1,0}};
 
-	g = new_graph(size);
-	fill_graph(g,m2,0);
+	Pgraph g2 = new_graph(size);
+	fill_graph(g2,m2,0);
 
-	int **edges_list_2 = get_edges_list(g);
+	int **edges_list_2 = get_edges_list(g2);
 
 	int **diff_edges_list = get_diff_edges_list(edges_list_1,4,edges_list_2,3);
 
-	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,0,1),0);
-	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,1,0),0);
-	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,0,2),0);
-	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,2,0),0);
-	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,2,1),1);
-	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,1,2),1);
-	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,2,3),0);
-	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,3,2),0);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,0,1),-1);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,1,0),-1);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,0,2),-1);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,2,0),-1);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,2,1),0);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,1,2),0);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,2,3),-1);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list,1,3,2),-1);
+
+	size = 4;
+	/*
+	 * ...
+	 * ...
+	 * ...
+	 *
+	 */
+	int m3[4][4] = {
+		{0,0,0,0},
+		{0,0,0,0},
+		{0,0,0,0},
+		{0,0,0,0}};
+
+	Pgraph g3 = new_graph(size);
+	fill_graph(g3,m3,0);
+
+	int **edges_list_3 = get_edges_list(g3);
+
+	int **diff_edges_list_2 = get_diff_edges_list(edges_list_1,4,edges_list_3,0);
+
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list_2,4,0,1),0);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list_2,4,1,0),0);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list_2,4,0,2),1);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list_2,4,2,0),1);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list_2,4,2,1),2);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list_2,4,1,2),2);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list_2,4,2,3),3);
+	CU_ASSERT_EQUAL(find_edge(diff_edges_list_2,4,3,2),3);
 
 	free_matrix(edges_list_1,4);
 	free_matrix(edges_list_2,3);
+	free_matrix(edges_list_3,0);
 	free_matrix(diff_edges_list,1);
-	free_graph(g);
+	free_matrix(diff_edges_list_2,4);
+	free_graph(g1);
+	free_graph(g2);
+	free_graph(g3);
 }
 
+void test_find_min_weight_edges(void){
+	int size = 10;
+	int* selected_edges_list = (int *)calloc(size,sizeof(int));
+	int* weight_list = (int *)calloc(size,sizeof(int));
+
+	selected_edges_list[0]=0;
+	selected_edges_list[1]=1;
+	selected_edges_list[2]=1;
+	selected_edges_list[3]=1;
+	selected_edges_list[4]=1;
+	selected_edges_list[5]=0;
+	selected_edges_list[6]=0;
+	selected_edges_list[7]=0;
+	selected_edges_list[8]=0;
+	selected_edges_list[9]=0;
+
+	weight_list[0]=12;
+	weight_list[1]=2;
+	weight_list[2]=3;
+	weight_list[3]=2;
+	weight_list[4]=23;
+	weight_list[5]=1;
+	weight_list[6]=42;
+	weight_list[7]=1;
+	weight_list[8]=12;
+	weight_list[9]=2;
+
+	find_min_weight_edges(selected_edges_list,weight_list,size);
+
+	CU_ASSERT_EQUAL(selected_edges_list[0],0);
+	CU_ASSERT_EQUAL(selected_edges_list[1],1);
+	CU_ASSERT_EQUAL(selected_edges_list[2],0);
+	CU_ASSERT_EQUAL(selected_edges_list[3],1);
+	CU_ASSERT_EQUAL(selected_edges_list[4],0);
+	CU_ASSERT_EQUAL(selected_edges_list[5],0);
+	CU_ASSERT_EQUAL(selected_edges_list[6],0);
+	CU_ASSERT_EQUAL(selected_edges_list[7],0);
+	CU_ASSERT_EQUAL(selected_edges_list[8],0);
+	CU_ASSERT_EQUAL(selected_edges_list[9],0);
+
+	selected_edges_list[0]=0;
+	selected_edges_list[1]=1;
+	selected_edges_list[2]=1;
+	selected_edges_list[3]=1;
+	selected_edges_list[4]=1;
+	selected_edges_list[5]=1;
+	selected_edges_list[6]=0;
+	selected_edges_list[7]=0;
+	selected_edges_list[8]=0;
+	selected_edges_list[9]=0;
+
+	find_min_weight_edges(selected_edges_list,weight_list,size);
+
+	CU_ASSERT_EQUAL(selected_edges_list[0],0);
+	CU_ASSERT_EQUAL(selected_edges_list[1],0);
+	CU_ASSERT_EQUAL(selected_edges_list[2],0);
+	CU_ASSERT_EQUAL(selected_edges_list[3],0);
+	CU_ASSERT_EQUAL(selected_edges_list[4],0);
+	CU_ASSERT_EQUAL(selected_edges_list[5],1);
+	CU_ASSERT_EQUAL(selected_edges_list[6],0);
+	CU_ASSERT_EQUAL(selected_edges_list[7],0);
+	CU_ASSERT_EQUAL(selected_edges_list[8],0);
+	CU_ASSERT_EQUAL(selected_edges_list[9],0);
+
+	free(weight_list);
+	free(selected_edges_list);
+}
 
 /* ########################################################## */
 /* ################# RANDOM_GRAPH.C TESTS ################### */
@@ -981,4 +1086,535 @@ void test_vertice_type_list(void)
 
 	free(vertice_type_list);
 	free_graph(g);
+}
+
+void test_connected_components_vertices(void){
+	int size = 5;
+	/*
+	 * ...
+	 * ...
+	 * ...
+	 *
+	 */
+	int m[5][5] = {
+		{0,0,0,0,0},
+		{0,0,0,0,0},
+		{0,0,0,0,0},
+		{0,0,0,0,0},
+		{0,0,0,0,0}};
+
+	Pgraph g = new_graph(size);
+	fill_graph(g,m,0);
+
+	int **reach = connected_components_vertices(g);
+
+	CU_ASSERT_EQUAL(reach[0][1],0);
+	CU_ASSERT_EQUAL(reach[1][1],1);
+	CU_ASSERT_EQUAL(reach[2][1],2);
+	CU_ASSERT_EQUAL(reach[3][1],3);
+	CU_ASSERT_EQUAL(reach[4][1],4);
+
+	free_matrix(reach,5);
+	free_graph(g);
+
+	size = 6;
+	/*
+	 * 0-1
+	 * ...
+	 * 2-3
+	 * ...
+	 * 4-5
+	 *
+	 */
+	int m2[6][6] = {
+		{0,1,0,0,0,0},
+		{1,0,0,0,0,0},
+		{0,0,0,1,0,0},
+		{0,0,1,0,0,0},
+		{0,0,0,0,0,1},
+		{0,0,0,0,1,0}};
+
+	g = new_graph(size);
+	fill_graph(g,m2,0);
+
+	reach = connected_components_vertices(g);
+
+	CU_ASSERT_EQUAL(reach[0][1],0);
+	CU_ASSERT_EQUAL(reach[1][1],0);
+	CU_ASSERT_EQUAL(reach[2][1],1);
+	CU_ASSERT_EQUAL(reach[3][1],1);
+	CU_ASSERT_EQUAL(reach[4][1],2);
+	CU_ASSERT_EQUAL(reach[5][1],2);
+
+	free_matrix(reach,6);
+	free_graph(g);
+
+	size = 6;
+	/*
+	 * 0-1
+	 * |..
+	 * 2-3
+	 * ..|
+	 * 4.5
+	 *
+	 */
+	int m3[6][6] = {
+		{0,1,1,0,0,0},
+		{1,0,0,0,0,0},
+		{1,0,0,1,0,0},
+		{0,0,1,0,0,1},
+		{0,0,0,0,0,0},
+		{0,0,0,1,0,0}};
+
+	g = new_graph(size);
+	fill_graph(g,m3,0);
+
+	reach = connected_components_vertices(g);
+
+	CU_ASSERT_EQUAL(reach[0][1],0);
+	CU_ASSERT_EQUAL(reach[1][1],0);
+	CU_ASSERT_EQUAL(reach[2][1],0);
+	CU_ASSERT_EQUAL(reach[3][1],0);
+	CU_ASSERT_EQUAL(reach[4][1],1);
+	CU_ASSERT_EQUAL(reach[5][1],0);
+
+	free_matrix(reach,6);
+	free_graph(g);
+}
+
+void test_connected_components_two_vertices(void){
+	int size = 5;
+	/*
+	 * ...
+	 * ...
+	 * ...
+	 *
+	 */
+	int m[5][5] = {
+		{0,0,0,0,0},
+		{0,0,0,0,0},
+		{0,0,0,0,0},
+		{0,0,0,0,0},
+		{0,0,0,0,0}};
+
+	Pgraph g = new_graph(size);
+	fill_graph(g,m,0);
+
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,1,2),0);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,2,1),0);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,3,1),0);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,1,3),0);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,4,2),0);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,2,4),0);
+
+	free_graph(g);
+
+	size = 6;
+	/*
+	 * 0-1
+	 * ...
+	 * 2-3
+	 * ...
+	 * 4-5
+	 *
+	 */
+	int m2[6][6] = {
+		{0,1,0,0,0,0},
+		{1,0,0,0,0,0},
+		{0,0,0,1,0,0},
+		{0,0,1,0,0,0},
+		{0,0,0,0,0,1},
+		{0,0,0,0,1,0}};
+
+	g = new_graph(size);
+	fill_graph(g,m2,0);
+
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,0,1),1);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,1,0),1);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,2,3),1);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,3,2),1);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,4,5),1);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,5,4),1);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,0,2),0);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,2,0),0);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,3,1),0);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,1,3),0);
+
+	free_graph(g);
+
+	size = 6;
+	/*
+	 * 0-1
+	 * |..
+	 * 2-3
+	 * ..|
+	 * 4.5
+	 *
+	 */
+	int m3[6][6] = {
+		{0,1,1,0,0,0},
+		{1,0,0,0,0,0},
+		{1,0,0,1,0,0},
+		{0,0,1,0,0,1},
+		{0,0,0,0,0,0},
+		{0,0,0,1,0,0}};
+
+	g = new_graph(size);
+	fill_graph(g,m3,0);
+
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,0,1),1);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,0,5),1);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,2,3),1);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,4,0),0);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,4,1),0);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,4,2),0);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,4,3),0);
+	CU_ASSERT_EQUAL(connected_components_two_vertices(g,4,5),0);
+
+	free_graph(g);
+}
+
+void test_get_weight_list(void){
+	int size = 6;
+	int i;
+	/*
+	 * 0-3-4
+	 * |/.\|
+	 * 1...5
+	 * |....
+	 * 2....
+	 *
+	 */
+	int m[6][6] = {
+		{0,1,0,1,0,0},
+		{1,0,1,1,0,0},
+		{0,1,0,0,0,0},
+		{1,1,0,0,1,1},
+		{0,0,0,1,0,1},
+		{0,0,0,1,1,0}};
+
+	Pgraph g = new_graph(size);
+	fill_graph(g,m,0);
+
+	int size2 = g->edges_number;
+
+	int *weight_list = get_weight_list(g);
+
+	for (i = 0; i < size2; ++i)
+	{
+		CU_ASSERT_EQUAL(weight_list[i],1);
+	}
+
+	free(weight_list);
+	free_graph(g);
+}
+
+void test_modify_weight_list(void){
+	int size = 6;
+	/*
+	 * 0-3-4
+	 * |/.\|
+	 * 1...5
+	 * |....
+	 * 2....
+	 *
+	 */
+	int m[6][6] = {
+		{0,1,0,1,0,0},
+		{1,0,1,1,0,0},
+		{0,1,0,0,0,0},
+		{1,1,0,0,1,1},
+		{0,0,0,1,0,1},
+		{0,0,0,1,1,0}};
+
+	Pgraph g = new_graph(size);
+	fill_graph(g,m,0);
+
+	int size2 = g->edges_number;
+
+	int *weight_list = get_weight_list(g);
+	int** edges_list = get_edges_list(g);
+
+	modify_weight_list(3,weight_list,edges_list,size2,1);
+
+	CU_ASSERT_EQUAL(weight_list[0],1);
+	CU_ASSERT_EQUAL(weight_list[1],2);
+	CU_ASSERT_EQUAL(weight_list[2],1);
+	CU_ASSERT_EQUAL(weight_list[3],2);
+	CU_ASSERT_EQUAL(weight_list[4],2);
+	CU_ASSERT_EQUAL(weight_list[5],2);
+	CU_ASSERT_EQUAL(weight_list[6],1);
+
+	free_matrix(edges_list,size2);
+	free(weight_list);
+	free_graph(g);
+}
+
+/* ########################################################## */
+/* ################### HEURISTIC.C TESTS #################### */
+/* ########################################################## */
+
+void test_stoer_wagner(void){
+	int size1 = 6;
+	/*
+	 * 0-3-4
+	 * |/.\|
+	 * 1...5
+	 * |....
+	 * 2....
+	 *
+	 */
+	int m[6][6] = {
+		{0,1,0,1,0,0},
+		{1,0,1,1,0,0},
+		{0,1,0,0,0,0},
+		{1,1,0,0,1,1},
+		{0,0,0,1,0,1},
+		{0,0,0,1,1,0}};
+
+	Pgraph g = new_graph(size1);
+	fill_graph(g,m,0);
+
+	int *weight_list = get_weight_list(g);
+
+	int size2 = g->edges_number;
+	int** edges_list = get_edges_list(g);
+
+	int *cut_list = run_stoer_wagner(weight_list,size1,edges_list,size2);
+
+	CU_ASSERT_EQUAL(cut_list[0],0);
+	CU_ASSERT_EQUAL(cut_list[1],0);
+	CU_ASSERT_EQUAL(cut_list[2],1);
+	CU_ASSERT_EQUAL(cut_list[3],0);
+	CU_ASSERT_EQUAL(cut_list[4],0);
+	CU_ASSERT_EQUAL(cut_list[5],0);
+	CU_ASSERT_EQUAL(cut_list[6],0);
+
+	free(weight_list);
+	free_matrix(edges_list,size2);
+	free(cut_list);
+	free_graph(g);
+
+	size1 = 6;
+	/*
+	 * 0-3-4
+	 * |/.\|
+	 * 1...5
+	 * |....
+	 * 2....
+	 *
+	 */
+	int m2[6][6] = {
+		{0,1,0,1,0,0},
+		{1,0,1,1,0,0},
+		{0,1,0,0,0,0},
+		{1,1,0,0,1,1},
+		{0,0,0,1,0,1},
+		{0,0,0,1,1,0}};
+
+	g = new_graph(size1);
+	fill_graph(g,m2,0);
+
+	weight_list = get_weight_list(g);
+	weight_list[0] = 0;
+	weight_list[1] = 0;
+
+	size2 = g->edges_number;
+	edges_list = get_edges_list(g);
+
+	cut_list = run_stoer_wagner(weight_list,size1,edges_list,size2);
+
+	CU_ASSERT_EQUAL(cut_list[0],1);
+	CU_ASSERT_EQUAL(cut_list[1],1);
+	CU_ASSERT_EQUAL(cut_list[2],0);
+	CU_ASSERT_EQUAL(cut_list[3],0);
+	CU_ASSERT_EQUAL(cut_list[4],0);
+	CU_ASSERT_EQUAL(cut_list[5],0);
+	CU_ASSERT_EQUAL(cut_list[6],0);
+
+	free(weight_list);
+	free_matrix(edges_list,size2);
+	free(cut_list);
+	free_graph(g);
+}
+
+void test_saturer(void){
+	int size1 = 6;
+	/*
+	 * 0-3-4
+	 * |/.\.
+	 * 1...5
+	 * |....
+	 * 2....
+	 *
+	 */
+	int m[6][6] = {
+		{0,1,0,1,0,0},
+		{1,0,1,1,0,0},
+		{0,1,0,0,0,0},
+		{1,1,0,0,1,1},
+		{0,0,0,1,0,0},
+		{0,0,0,1,0,0}};
+
+	Pgraph g = new_graph(size1);
+	fill_graph(g,m,0);
+	Pgraph tree = new_graph(size1);
+	int v = 3;
+	int *vertice_type_list = get_vertice_type_list(g);
+	int *weight_list = get_weight_list(g);
+
+	saturer(g,tree,v,vertice_type_list,weight_list);
+
+	CU_ASSERT_EQUAL(weight_list[0],1);
+	CU_ASSERT_EQUAL(weight_list[1],1000);
+	CU_ASSERT_EQUAL(weight_list[2],1);
+	CU_ASSERT_EQUAL(weight_list[3],1);
+	CU_ASSERT_EQUAL(weight_list[4],1000);
+	CU_ASSERT_EQUAL(weight_list[5],1000);
+
+	free(vertice_type_list);
+	free(weight_list);
+	free_graph(tree);
+	free_graph(g);
+}
+
+void test_departager(void){
+	int size1 = 6;
+	int x,y;
+	/*
+	 * 0-3-4
+	 * |/.\.
+	 * 1...5
+	 * |....
+	 * 2....
+	 *
+	 */
+	int m[6][6] = {
+		{0,1,0,1,0,0},
+		{1,0,1,1,0,0},
+		{0,1,0,0,0,0},
+		{1,1,0,0,1,1},
+		{0,0,0,1,0,0},
+		{0,0,0,1,0,0}};
+
+	Pgraph g = new_graph(size1);
+	fill_graph(g,m,0);
+	int ** edges_list = get_edges_list(g);
+	int size = g->edges_number;
+
+	size1 = 6;
+	/*
+	 * 0-3-4
+	 * ...\.
+	 * 1...5
+	 * |....
+	 * 2....
+	 *
+	 */
+	int m2[6][6] = {
+		{0,0,0,1,0,0},
+		{0,0,1,0,0,0},
+		{0,1,0,0,0,0},
+		{1,0,0,0,1,1},
+		{0,0,0,1,0,0},
+		{0,0,0,1,0,0}};
+
+	Pgraph tree = new_graph(size1);
+	fill_graph(tree,m2,0);
+
+	int* cut_list = (int *)calloc(size,sizeof(int));
+
+	cut_list[0]=1;
+	cut_list[1]=0;
+	cut_list[2]=0;
+	cut_list[3]=1;
+	cut_list[4]=0;
+	cut_list[5]=0;
+
+	departager(tree,cut_list,edges_list,size,&x,&y);
+
+	CU_ASSERT_EQUAL(0,x);
+	CU_ASSERT_EQUAL(1,y);
+
+	cut_list[0]=0;
+	cut_list[1]=0;
+	cut_list[2]=0;
+	cut_list[3]=1;
+	cut_list[4]=1;
+	cut_list[5]=0;
+
+	departager(tree,cut_list,edges_list,size,&x,&y);
+
+	CU_ASSERT_EQUAL(1,x);
+	CU_ASSERT_EQUAL(3,y);
+
+	free_matrix(edges_list,size);
+	free(cut_list);
+	free_graph(tree);
+	free_graph(g);
+
+}
+
+void test_changer_type(void){
+	int size1 = 6;
+	/*
+	 * 0-3-4
+	 * |/.\|
+	 * 1...5
+	 * |....
+	 * 2....
+	 *
+	 */
+	int m[6][6] = {
+		{0,1,0,1,0,0},
+		{1,0,1,1,0,0},
+		{0,1,0,0,0,0},
+		{1,1,0,0,1,1},
+		{0,0,0,1,0,1},
+		{0,0,0,1,1,0}};
+
+	Pgraph g = new_graph(size1);
+	fill_graph(g,m,0);
+	int *vertice_type_list = get_vertice_type_list(g);
+	int *weight_list = get_weight_list(g);
+	int **edges_list = get_edges_list(g);
+	int size = g->edges_number;
+
+	size1 = 6;
+	/*
+	 * 0-3-4
+	 * ...\|
+	 * 1...5
+	 * |....
+	 * 2....
+	 *
+	 */
+	int m2[6][6] = {
+		{0,0,0,1,0,0},
+		{0,0,1,0,0,0},
+		{0,1,0,0,0,0},
+		{1,0,0,0,1,1},
+		{0,0,1,0,0,1},
+		{0,0,1,0,1,0}};
+
+	Pgraph tree = new_graph(size1);
+	fill_graph(tree,m2,0);
+
+	changer_type(g,tree,3,vertice_type_list,weight_list,edges_list,size);
+
+	CU_ASSERT_EQUAL(vertice_type_list[3],3);
+	CU_ASSERT_EQUAL(weight_list[0],1);
+	CU_ASSERT_EQUAL(weight_list[1],-2);
+	CU_ASSERT_EQUAL(weight_list[2],1);
+	CU_ASSERT_EQUAL(weight_list[3],-2);
+	CU_ASSERT_EQUAL(weight_list[4],-2);
+	CU_ASSERT_EQUAL(weight_list[5],-2);
+	CU_ASSERT_EQUAL(weight_list[6],1);
+
+	free_matrix(edges_list,size);
+	free(vertice_type_list);
+	free(weight_list);
+	free_graph(tree);
+	free_graph(g);
+
 }

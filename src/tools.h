@@ -37,6 +37,14 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 void print_matrix(int** m, int size);
 
+
+/**
+ * This function print the content of an array.
+ * @param a    The array we want to print.
+ * @param size The size of the array we want to print.
+ */
+void print_array(int* a, int size);
+
 /**
  * This function allocate a matrix, given a size m.
  * @param m    	 A null pointer.

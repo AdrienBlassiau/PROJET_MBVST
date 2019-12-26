@@ -56,8 +56,28 @@ int run_dfs_connected_components(Pgraph g, int v);
  * @param  g              The graph G.
  * @param  v              The first vertice reached.
  * @param  reach          The list of reached vertices.
+ * @param  depth          The number of the connected component.
  */
-void dfs(Pgraph g, int v, int* reach);
+void dfs(Pgraph g, int v, int** reach, int depth);
+
+
+/**
+ * This function returns the vertices of each connected components of a graph
+ * G.
+ * @param  g The graph G.
+ * @return   The list of each vertice with is connected component associated.
+ */
+int** connected_components_vertices(Pgraph g);
+
+/**
+ * This functions returns if two vertices are on the same connected components.
+ * @param  g THe graph G.
+ * @param  i The first vertice.
+ * @param  j The second vertice.
+ * @return   1 if the two vertices are on the same connected component, O
+ *           otherwise.
+ */
+int connected_components_two_vertices(Pgraph g, int i, int j);
 
 /**
  * This function returns the type of a vertice.
@@ -83,6 +103,24 @@ int test_strongly_connected(Pgraph g, int x, int y);
  * @return   The association list of the type of each vertice..
  */
 int *get_vertice_type_list(Pgraph g);
+
+/**
+ * This function returns the weight list.
+ * @param  g The graph G.
+ * @return   The weight list
+ */
+int *get_weight_list(Pgraph g);
+
+/**
+ * This function returns the weight list with an augmented weight of
+ * modifier for all edges linked to v;
+ * @param  v           The vertice v
+ * @param  weight_list The weight list.
+ * @param  edges_list  The edges list.
+ * @param  size 	   The size of the weight list.
+ * @param  modifier    The number we add.
+ */
+void modify_weight_list(int v, int *weight_list, int **edges_list, int size, int modifier);
 
 /**
  * This function tests if two vertices belongs to the same connected
