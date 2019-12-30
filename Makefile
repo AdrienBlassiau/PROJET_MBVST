@@ -21,8 +21,8 @@ CC=g++ -Wall -Wextra -O2 -lboost_system -lboost_date_time -lboost_thread -lm -lg
 
 all : main
 
-main : main.o graph.o tools.o heuristic.o random_graph.o
-	cd obj/ && $(CC) $^ -o ../bin/$@ -lboost_system -lboost_date_time -lboost_thread -lm
+main : main.o graph.o tools.o heuristic.o random_graph.o lp.o
+	cd obj/ && $(CC) $^ -o ../bin/$@ -lboost_system -lboost_date_time -lboost_thread -lm -lglpk
 
 test : main_test.o graph.o random_graph.o tools.o heuristic.o test_unit.o
 	cd obj/ && $(CC) $^ -o ../bin/$@ -lboost_system -lboost_date_time -lboost_thread -lm -lcunit
@@ -43,6 +43,9 @@ tools.o : src/tools.c
 	$(CC) -c $< -o obj/$@
 
 heuristic.o : src/heuristic.c
+	$(CC) -c $< -o obj/$@
+
+lp.o : src/lp.c
 	$(CC) -c $< -o obj/$@
 
 test_unit.o : test/test_unit.c src/include.h

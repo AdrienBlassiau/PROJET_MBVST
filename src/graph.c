@@ -90,6 +90,43 @@ int** get_edges_list(Pgraph g){
 	return edges_list;
 }
 
+int get_edges_ind(int** l, int i, int j, int size){
+	int m;
+	for (m = 0; m < size; m++){
+		if (l[m][0] == i && l[m][1] == j){
+			return m;
+		}
+	}
+
+	return -1;
+}
+
+int** get_edges_list_2(Pgraph g){
+	int** am = g->adjacency_matrix;
+	int size1 = g->vertices_number;
+	int size2 = g->edges_number;
+	int i,j,k;
+
+	int **edges_list;
+	allocate_matrix(&edges_list,size2,2);
+
+	k=0;
+	for (i = 0; i < size1; i++)
+	{
+		for (j = i; j < size1; j++)
+		{
+			if (am[i][j] == 1)
+			{
+				edges_list[k][0] = j;
+				edges_list[k][1] = i;
+				k++;
+			}
+		}
+	}
+
+	return edges_list;
+}
+
 int find_min_weight_edges(int* selected_edges_list, int *weight_list, int size){
 	int i;
 	int first=1;
@@ -266,4 +303,15 @@ void print_graph(Pgraph g, int verbose){
 		printf("number of vertices : %d\n",g->vertices_number);
 		printf("number of edges : %d\n",g->edges_number);
 	}
+}
+
+void print_edges(Pgraph g){
+	int m = g->edges_number;
+	int i;
+	int** res = get_edges_list(g);
+
+	for (i = 0; i < m; i++){
+		printf("%d-%d\n",res[i][0],res[i][1]);
+	}
+	free_matrix(res,m);
 }

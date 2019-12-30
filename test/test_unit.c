@@ -300,6 +300,10 @@ void test_edges_list(void)
 	CU_ASSERT_EQUAL(edges_list[3][0],2);
 	CU_ASSERT_EQUAL(edges_list[3][1],4);
 
+	CU_ASSERT_EQUAL(get_edges_ind(edges_list,0,2,4),0);
+	CU_ASSERT_EQUAL(get_edges_ind(edges_list,2,0,4),-1);
+	CU_ASSERT_EQUAL(get_edges_ind(edges_list,2,4,4),3);
+
 	free_matrix(edges_list,4);
 	free_graph(g);
 

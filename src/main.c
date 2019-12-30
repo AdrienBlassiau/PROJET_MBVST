@@ -23,6 +23,7 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "tools.h"
 #include "random_graph.h"
 #include "heuristic.h"
+#include "lp.h"
 
 int main()
 {
@@ -81,34 +82,66 @@ int main()
 	printf("########## 2.Résolution approchée (heuristique) ##########\n");
 	printf("##########################################################\n\n");
 
-	size = 8;
+	size = 9;
 	/*
-	 * 0-3-4
-	 * |/.\.
-	 * 1...5
-	 * |....
-	 * 2....
+	 * 0-1-2
+	 * |.|.|
+	 * 3-4-5
+	 * |.|.|
+	 * 6-7-8
 	 *
 	 */
-	int m2[8][8] = {
-		{0,1,0,0,0,0,0,0},
-		{1,0,1,1,0,0,0,0},
-		{0,1,0,1,1,0,0,0},
-		{0,1,1,0,1,1,0,0},
-		{0,0,1,1,0,1,1,1},
-		{0,0,0,1,1,0,1,0},
-		{0,0,0,0,1,1,0,0},
-		{0,0,0,0,1,0,0,0}};
+	int m2[9][9] = {
+	{0,1,0,1,0,0,0,0,0},
+	{1,0,1,0,1,0,0,0,0},
+	{0,1,0,0,0,1,0,0,0},
+	{1,0,0,0,1,0,1,0,0},
+	{0,1,0,1,0,1,0,1,0},
+	{0,0,1,0,1,0,0,0,1},
+	{0,0,0,1,0,0,0,1,0},
+	{0,0,0,0,1,0,1,0,1},
+	{0,0,0,0,0,1,0,1,0}};
 
-		g = new_graph(size);
-		fill_graph(g,m2,0);
-		print_graph(g,1);
+	g = new_graph(size);
+	fill_graph(g,m2,0);
+	print_graph(g,1);
 
-		Pgraph tree = MBVST(g);
+	Pgraph tree = MBVST(g);
 
-		print_graph(tree,1);
-		free_graph(tree);
-		free_graph(g);
+	print_graph(tree,1);
+	print_edges(tree);
 
-		return 0;
-	}
+	free_graph(tree);
+	free_graph(g);
+
+	printf("\n##########################################################\n");
+	printf("################### 3.Résolution exacte ###################\n");
+	printf("##########################################################\n\n");
+
+	size=9;
+
+	int m3[9][9] = {
+	{0,1,0,1,0,0,0,0,0},
+	{1,0,1,0,1,0,0,0,0},
+	{0,1,0,0,0,1,0,0,0},
+	{1,0,0,0,1,0,1,0,0},
+	{0,1,0,1,0,1,0,1,0},
+	{0,0,1,0,1,0,0,0,1},
+	{0,0,0,1,0,0,0,1,0},
+	{0,0,0,0,1,0,1,0,1},
+	{0,0,0,0,0,1,0,1,0}};
+
+	g = new_graph(size);
+	fill_graph(g,m3,0);
+
+	// density = compute_density_formula(size);
+	// g = generate_random_graph(size,density);
+	// print_graph(g,0);
+	// tree = MBVST(g);
+	// print_graph(tree,0);
+	run_lp(g);
+
+	free_graph(g);
+	// free_graph(tree);
+	return 0;
+}

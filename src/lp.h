@@ -18,16 +18,21 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
-#ifndef __INCLUDE__
-#define __INCLUDE__
+#ifndef __LP__H
+#define __LP__H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <time.h>
-#include <math.h>
-#include <limits.h>
-#include <glpk.h>
+/** @file lp.h
+ *
+ * @brief This file manages the exact solution with lp method.
+ */
+
+#include "graph.h"
+
+/**
+ * This function run GLPK on our problem.
+ * @param  g       The graph G.
+ * @return 1 if success, 0 otherwise.
+ */
+int run_lp(Pgraph g);
 
 #endif

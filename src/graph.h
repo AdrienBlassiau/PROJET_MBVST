@@ -18,6 +18,9 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
+#ifndef __GRAPH__H
+#define __GRAPH__H
+
 /** @file graph.h
  *
  * @brief This file manages all the graph functions.
@@ -87,6 +90,23 @@ void set_edges_number(Pgraph g, int density);
  * @return   The list of the edges.
  */
 int** get_edges_list(Pgraph g);
+
+/**
+ * This function computes the index of an edge on the edges list.
+ * @param  l    The edges list.
+ * @param  i    The first vertice of the edge.
+ * @param  j    The second vertice of the edge.
+ * @param  size The size of the edges list.
+ * @return      The index of (i,j) on l or -1 if (i,j) does not exist.
+ */
+int get_edges_ind(int** l, int i, int j, int size);
+
+/**
+ * This function returns thelist of all the edges of an undirected graph G.
+ * @param  g The graph G.
+ * @return   The list of the edges.
+ */
+int** get_edges_list_2(Pgraph g);
 
 /**
  * This function return the min weight edges of a set.
@@ -184,3 +204,11 @@ Pgraph free_graph(Pgraph g);
  * @param  verbose  1 if we want more informations, 0 otherwise.
  */
 void print_graph(Pgraph g, int verbose);
+
+/**
+ * This function prints the edges of a graph.
+ * @param  g 		The graph we want to print.
+ */
+void print_edges(Pgraph g);
+
+#endif
