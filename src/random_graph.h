@@ -20,7 +20,7 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 /** @file random_graph.h
  *
- * @brief Given a graph, this file computes his transitive closure
+ * @brief This file manages the generation of random graphs.
  */
 
 

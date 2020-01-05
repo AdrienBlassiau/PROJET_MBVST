@@ -1,3 +1,19 @@
+Copyright (c) 2019-2020, Adrien BLASSIAU
+
+Permission to use, copy, modify, and/or distribute this software
+for any purpose with or without fee is hereby granted, provided
+that the above copyright notice and this permission notice appear
+in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 # Projet 
 
 Auteur: 
@@ -10,7 +26,7 @@ IMPORTANT: LIRE CE FICHIER AVANT DE LANCER LE PROGRAMME
 
 
   Sommaire
-==================================================================================
+===============================================================================
 
 1. Introduction
 2. Instructions d'installation des différents outils
@@ -19,21 +35,21 @@ IMPORTANT: LIRE CE FICHIER AVANT DE LANCER LE PROGRAMME
 
 
 1. Introduction                 
-==================================================================================
+===============================================================================
 
-Ceci est le README du projet de PROG2 associé au Challenge **Monotonic Segments and GHC Sort**. Vous trouverez dans ce document toutes les informations nécessaires pour faire fonctionner le code.
+Ceci est le README du projet d'OPTI2.
 
-NOTE: Nous vous invitons à lire notre rapport qui vous renseignera sur la démarche et les choix engagés dans ce projet.
+NOTE: Je vous invite à lire le rapport qui vous renseignera sur la démarche et les choix engagés dans ce projet.
 
 
 2. Instructions d'installation des différents outils pour l'exécution du code
-==================================================================================
+===============================================================================
 
 
 **Utilisateur Linux**
 
 
-*********************************************************************************************
+*******************************************************************************
 
 Doxygen
 --------
@@ -43,7 +59,7 @@ Doxygen est un outil qui permet de gérer la documentation de son code. Il perme
 **Entrez dans votre console** : 
 > sudo apt-get install doxygen
 
-*********************************************************************************************
+*******************************************************************************
 
 CUnit
 --------
@@ -55,24 +71,20 @@ CUnit est une bibliothèque de tests unitaires pour C. Elle permet de programmer
 
 
 3. Conseils d'utilisation
-==================================================================================
+===============================================================================
 
 Voici différentes commandes qui vous permettrons d'observer des résultats et informations sur le travail effectué :
 
 
-Lancer l'analyse statique du code
+Lancer le code principal
 ------------------------
 
-Pour lancer l'analyse statique du code associé aux différentes parties du projet, entrez les commandes suivantes à la racine du projet
+Pour lancer le code principal, entrez la commande suivante à la racine du projet :
 
 **1. Entrez dans votre console** : 
-> frama-c-gui -wp -wp-rte -wp-timeout 20 src/monotonic_cutpoints.c
+> make && ./bin/main
 
-**2. Entrez dans votre console** : 
-> frama-c-gui -wp -wp-rte -wp-timeout 20 src/monotonic_reverse.c
-
-**3. Entrez dans votre console** : 
-> frama-c-gui -wp -wp-rte -wp-timeout 20 src/merge.c
+L’exécutable est déjà généré, vous n'êtes pas obligé de recompiler avec make. Enfin, tout l'output de l’exécutable est disponible dans output.txt qui contient en plus les graphes générés de grandes tailles (dépassant la taille du terminal ...) et des résultats sur un PL que j'ai laissé tourner plus de trois heures.
 
 
 *********************************************************************************************
@@ -106,7 +118,7 @@ Vous pouvez aussi régénérer la documentation puis l'ouvrir :
 Tests unitaires CUnit
 ---------------------
 
-Pour obtenir l'ensemble des résultats de nos tests unitaires : 
+Pour obtenir l'ensemble des résultats des tests unitaires : 
 
 **Entrez dans votre console** : 
 > ./bin/test

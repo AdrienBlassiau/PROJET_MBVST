@@ -73,7 +73,7 @@ int main()
 		density = compute_density_formula(tab_size[i]);
 		printf("La densité d'un graphe de taille %d est : %d\n",tab_size[i],density);
 		Pgraph gr = generate_random_graph(tab_size[i],density,1);
-		print_graph(gr,1);
+		// print_graph(gr,1);
 		graph_tab[i] = gr;
 	}
 
@@ -85,9 +85,6 @@ int main()
 
 	for (i = 0; i < 6; i++){
 		Pgraph tree = MBVST(graph_tab[i]);
-		if (i==0){
-			print_graph(tree,1);
-		}
 
 		printf("branch vertices : %d\n",get_branch_vertex_number(tree));
 		free_graph(tree);

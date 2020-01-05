@@ -225,7 +225,7 @@ int run_lp(Pgraph g)
     glp_set_mat_row(lp, 1+n*m+m+i, count, ind, val);
   }
 
-  glp_write_lp(lp, NULL, "BigTEST.lp");
+  glp_write_lp(lp, NULL, "output.lp");
 
   // initialize integer optimizer parameters
   glp_init_iocp(&parm);
