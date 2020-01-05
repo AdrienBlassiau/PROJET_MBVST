@@ -39,6 +39,121 @@ int roy_warshall(Pgraph g){
 	return 1;
 }
 
+int remove_random_edges(Pgraph g, int n){
+	int x,y;
+	int** am = g->adjacency_matrix;
+	int size = g->vertices_number;
+
+	while(n > 0) {
+		x = rand() % size;
+		y = rand() % size;
+
+		if (am[x][y] == 1 && x!=y){
+			remove_edge(g,x,y);
+			n --;
+		}
+	}
+	return 1;
+}
+
+int test_connected(Pgraph g){
+	int i,j;
+	int size = g->vertices_number;
+
+	Pgraph g_copy = copy_graph(g);
+	roy_warshall(g_copy);
+	// print_graph(g_copy,1);
+
+	for (i = 0; i < size; i++){
+		for (j = i; j < size; j++){
+			if (!test_x_y_connected(g_copy,i,j)){
+				free_graph(g_copy);
+				return 0;
+			}
+		}
+	}
+	free_graph(g_copy);
+	return 1;
+}
+
+int test_connected_v2(Pgraph g, int method){
+	int i,j;
+	int size = g->vertices_number;
+	int check = 0;
+
+	/**********************************/
+	/* First step : check connectivity*/
+	/**********************************/
+
+	if (method == 0){
+
+		Pgraph g_copy = copy_graph(g);
+		roy_warshall(g_copy);
+
+		for (i = 0; i < size; i++){
+			for (j = 0; j < size; j++){
+				if (!test_x_y_connected(g_copy,i,j)){
+					check +=1;
+				}
+			}
+		}
+		free_graph(g_copy);
+	}
+	else{
+		check = run_dfs(g) != size;
+	}
+
+
+	/* => if everything is connected, it's done */
+	if (check==0){
+		return 1;
+	}
+
+	/* => if not, it remains some job to do*/
+
+	/*********************************************************/
+	/* Second step : count the number of connected components*/
+	/*********************************************************/
+
+	int ** reached = connected_components_vertices(g);
+	int number_components = 0;
+
+	for (i = 0; i < size; i++){
+		if (reached[i][1] > number_components){
+			number_components++;
+		}
+	}
+	number_components+=1;
+
+	/**************************************************/
+	/* Third step : link all the connected components */
+	/*        with number_components-1 edge           */
+	/**************************************************/
+
+	int vertice_to_link_tab[number_components];
+	int current_cc = 0;
+	for (i = 0; i < size; i++){
+		if (reached[i][1] == current_cc){
+			vertice_to_link_tab[current_cc] = i;
+			current_cc++;
+		}
+	}
+
+	for (i = 0; i < number_components-1; i++){
+		add_edge(g,vertice_to_link_tab[i],vertice_to_link_tab[i+1]);
+	}
+
+	/**********************************************************/
+	/* FOURTH step : remove number_components-1 edge randomly */
+	/**********************************************************/
+
+	remove_random_edges(g,number_components-1);
+
+	free_matrix(reached,size);
+	test_connected_v2(g,method);
+
+	return 1;
+}
 
 int run_dfs(Pgraph g){
 	int i;
@@ -123,8 +238,8 @@ int connected_components_two_vertices(Pgraph g, int i, int j){
 	return 0;
 }
 
-int get_vertice_type(Pgraph g, int v){
-	int vertice_degree = get_vertice_degree(g,v);
+int get_vertex_type(Pgraph g, int v){
+	int vertice_degree = get_vertex_degree(g,v);
 	int number_components = run_dfs_connected_components(g,v);
 
 	if (vertice_degree == 1 ||(vertice_degree == 2 && number_components == 2)){
@@ -141,14 +256,14 @@ int get_vertice_type(Pgraph g, int v){
 	}
 }
 
-int *get_vertice_type_list(Pgraph g){
+int *get_vertices_type_list(Pgraph g){
 	int i;
 	int size = g->vertices_number;
 	int vertice_type = 0;
 	int* vertice_type_list = (int *)calloc(size,sizeof(int));
 
 	for (i = 0; i < size; i++){
-		vertice_type = get_vertice_type(g,i);
+		vertice_type = get_vertex_type(g,i);
 		vertice_type_list[i] = vertice_type;
 	}
 
@@ -183,41 +298,17 @@ int test_x_y_strongly_connected(Pgraph g, int x, int y){
 	return g->adjacency_matrix[x][y] && g->adjacency_matrix[y][x];
 }
 
-
 int test_x_y_connected(Pgraph g, int x, int y){
 	return g->adjacency_matrix[x][y];
 }
 
-int test_connected(Pgraph g){
-	int i,j;
-	int size = g->vertices_number;
-
-	Pgraph g_copy = copy_graph(g);
-	roy_warshall(g_copy);
-	// print_graph(g_copy,1);
-
-	for (i = 0; i < size; i++){
-		for (j = i; j < size; j++){
-			if (i != j){
-				if (!test_x_y_connected(g_copy,i,j)){
-					free_graph(g_copy);
-					return 0;
-				}
-			}
-		}
-	}
-	free_graph(g_copy);
-	return 1;
-}
-
-Pgraph generate_random_graph(int size, int density){
+Pgraph generate_random_graph(int size, int density, int method){
 	int x,y;
 	Pgraph g = new_graph(size);
 	int** am = g->adjacency_matrix;
 	int edge_number = 0;
 
-	while(run_dfs(g) != size){
-
+	do{
 		clean_graph(g);
 		edge_number = 0;
 		// printf("Nouveau\n");
@@ -234,7 +325,7 @@ Pgraph generate_random_graph(int size, int density){
 		}
 
 		set_edges_number(g,edge_number);
-	}
+	} while(!test_connected_v2(g,method));
 
 	return g;
 

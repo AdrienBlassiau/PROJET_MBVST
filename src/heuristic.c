@@ -106,8 +106,22 @@ int* run_stoer_wagner(int* weight_list, int size1, int **edges_list, int size2)
   return cut_list;
 }
 
+int get_branch_vertex_number(Pgraph g){
+  int i;
+  int size = g->vertices_number;
+  int res = 0;
 
-void saturer(Pgraph g, Pgraph tree, int v, int *vertice_type_list, int *weight_list){
+  for (i = 0; i < size; i++){
+    if(get_vertex_degree(g,i) > 2){
+      res++;
+    }
+  }
+
+  return res;
+}
+
+
+void saturer(Pgraph g, Pgraph tree, int v, int *vertices_type_list, int *weight_list){
   int i,w;
   int size1 = g->edges_number;
   int **edges_list_1 = get_edges_list(g);
@@ -123,7 +137,7 @@ void saturer(Pgraph g, Pgraph tree, int v, int *vertice_type_list, int *weight_l
       v = diff_edges_list[i][0];
       w = diff_edges_list[i][1];
       // printf("On trouve arete %d-%d\n",v,w);
-      if (!connected_components_two_vertices(tree,v,w) && vertice_type_list[w] != 2){
+      if (!connected_components_two_vertices(tree,v,w) && vertices_type_list[w] != 2){
         add_edge(tree,v,w);
         weight_list[find_edge(edges_list_1,size1,v,w)] = 1000;
       }
@@ -132,7 +146,7 @@ void saturer(Pgraph g, Pgraph tree, int v, int *vertice_type_list, int *weight_l
       v = diff_edges_list[i][1];
       w = diff_edges_list[i][0];
       // printf("On trouve arete %d-%d\n",v,w);
-      if (!connected_components_two_vertices(tree,v,w) && vertice_type_list[w] != 2){
+      if (!connected_components_two_vertices(tree,v,w) && vertices_type_list[w] != 2){
         add_edge(tree,v,w);
         weight_list[find_edge(edges_list_1,size1,v,w)] = 1000;
       }
@@ -165,8 +179,8 @@ void departager(Pgraph tree, int *cut_list, int **edges_list, int size, int *x, 
   for (i = 0; i < size; i++){
     u = edges_list[i][0];
     v = edges_list[i][1];
-    deg_u = get_vertice_degree(tree,u);
-    deg_v = get_vertice_degree(tree,v);
+    deg_u = get_vertex_degree(tree,u);
+    deg_v = get_vertex_degree(tree,v);
 
     // printf("u:%d v:%d deg_u:%d deg_v:%d\n",u,v,deg_u,deg_v);
 
@@ -181,13 +195,13 @@ void departager(Pgraph tree, int *cut_list, int **edges_list, int size, int *x, 
   return ;
 }
 
-void changer_type(Pgraph g, Pgraph tree, int v, int *vertice_type_list, int *weight_list, int **edges_list, int size){
-  int deg_v = get_vertice_degree(tree,v);
+void changer_type(Pgraph g, Pgraph tree, int v, int *vertices_type_list, int *weight_list, int **edges_list, int size){
+  int deg_v = get_vertex_degree(tree,v);
 
   if (deg_v > 2){
-    vertice_type_list[v] = 3;
+    vertices_type_list[v] = 3;
     modify_weight_list(v,weight_list,edges_list,size,-3);
-    saturer(g,tree,v,vertice_type_list,weight_list);
+    saturer(g,tree,v,vertices_type_list,weight_list);
   }
 
 }
@@ -201,21 +215,21 @@ Pgraph MBVST(Pgraph g){
   Pgraph tree = new_graph(size1);
 
   int *weight_list = get_weight_list(g);
-  int *vertice_type_list = get_vertice_type_list(g);
+  int *vertices_type_list = get_vertices_type_list(g);
   int **edges_list = get_edges_list(g);
   int *cut_list;
 
   for (i = 0; i < size1; i++){
-    if (vertice_type_list[i] == 3){
+    if (vertices_type_list[i] == 3){
       // printf("On sature\n");
-      saturer(g,tree,i,vertice_type_list,weight_list);
+      saturer(g,tree,i,vertices_type_list,weight_list);
     }
   }
 
   int edges_number = tree->edges_number;
   int vertices_number = tree->vertices_number;
 
-  // print_array(vertice_type_list,size1);
+  // print_array(vertices_type_list,size1);
   // print_array(weight_list,size2);
   // print_graph(tree,1);
 
@@ -234,14 +248,14 @@ Pgraph MBVST(Pgraph g){
 
     add_edge(tree,u,v);
 
-    if (vertice_type_list[u] == 2){
+    if (vertices_type_list[u] == 2){
       modify_weight_list(u,weight_list,edges_list,size2,1);
-      changer_type(g,tree,u,vertice_type_list,weight_list,edges_list,size2);
+      changer_type(g,tree,u,vertices_type_list,weight_list,edges_list,size2);
     }
 
-    if (vertice_type_list[v] == 2){
+    if (vertices_type_list[v] == 2){
       modify_weight_list(v,weight_list,edges_list,size2,1);
-      changer_type(g,tree,v,vertice_type_list,weight_list,edges_list,size2);
+      changer_type(g,tree,v,vertices_type_list,weight_list,edges_list,size2);
     }
 
     weight_list[find_edge(edges_list,size2,u,v)] = 1000;
@@ -251,7 +265,7 @@ Pgraph MBVST(Pgraph g){
 
   free_matrix(edges_list,size2);
   free(weight_list);
-  free(vertice_type_list);
+  free(vertices_type_list);
 
   return tree;
 }

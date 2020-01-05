@@ -22,7 +22,7 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "graph.h"
 #include "tools.h"
 
-int get_vertice_degree(Pgraph g, int vertice){
+int get_vertex_degree(Pgraph g, int vertex){
 	int** am = g->adjacency_matrix;
 	int size = g->vertices_number;
 	int i;
@@ -30,19 +30,19 @@ int get_vertice_degree(Pgraph g, int vertice){
 
 	for (i = 0; i < size; i++)
 	{
-		degree+=am[vertice][i]?1:0;
+		degree+=am[vertex][i]?1:0;
 	}
 
 	return degree;
 }
 
-int get_vertice_degree_sum(Pgraph g){
+int get_vertices_degree_sum(Pgraph g){
 	int size = g->vertices_number;
 	int i;
 	int sum_degree = 0;
 
 	for (i = 0; i < size; i++){
-		sum_degree += get_vertice_degree(g,i);
+		sum_degree += get_vertex_degree(g,i);
 	}
 
 	return sum_degree;

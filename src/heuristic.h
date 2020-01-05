@@ -40,14 +40,21 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 int* run_stoer_wagner(int* weight_list, int size1, int **edges_list, int size2);
 
 /**
+ * This function computes the number of branch vertices of the graph
+ * @param  g [description]
+ * @return   [description]
+ */
+int get_branch_vertex_number(Pgraph g);
+
+/**
  * This function achieve one step of the algorithm.
  * @param g                 The graph G.
  * @param tree              The tree T.
- * @param v                 The vertice we want to saturate.
- * @param vertice_type_list The vertice type list.
+ * @param v                 The vertex we want to saturate.
+ * @param vertices_type_list The vertex type list.
  * @param weight_list       The weight list.
  */
-void saturer(Pgraph g, Pgraph tree, int v, int *vertice_type_list, int *weight_list);
+void saturer(Pgraph g, Pgraph tree, int v, int *vertices_type_list, int *weight_list);
 
 /**
  * This function achieves one step of the algorithm.
@@ -55,21 +62,21 @@ void saturer(Pgraph g, Pgraph tree, int v, int *vertice_type_list, int *weight_l
  * @param cut_list   The cut list.
  * @param edges_list The list of the edges.
  * @param size       The size of edges_list.
- * @param x          The first vertice of the selected edge.
- * @param y          The second vertice of the selected edge.
+ * @param x          The first vertex of the selected edge.
+ * @param y          The second vertex of the selected edge.
  */
 void departager(Pgraph tree, int *cut_list, int **edges_list, int size, int *x, int *y);
 
-/**his function changes the type of  vertice.
+/**his function changes the type of  vertex.
  * @param g                 The graph G.
  * @param tree              The tree T.
- * @param v                 The vertice v.
- * @param vertice_type_list The list of vertices type.
+ * @param v                 The vertex v.
+ * @param vertices_type_list The list of vertices type.
  * @param weight_list       The weight list.
  * @param edges_list The list of the edges.
  * @param size              The size of the weight list.
  */
-void changer_type(Pgraph g, Pgraph tree, int v, int *vertice_type_list, int *weight_list,int **edges_list, int size);
+void changer_type(Pgraph g, Pgraph tree, int v, int *vertices_type_list, int *weight_list,int **edges_list, int size);
 /**
  * This function applies the MBVST heuristic to graph G.
  * @param  g The graph G.

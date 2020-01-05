@@ -52,7 +52,7 @@ void test_copy_graph(void);
 
 void test_clean_graph(void);
 
-void test_vertice_degree(void);
+void test_vertex_degree(void);
 
 void test_edges_list(void);
 
@@ -80,9 +80,9 @@ void test_random_graph(void);
 
 void test_number_connected_components(void);
 
-void test_get_vertice_type(void);
+void test_get_vertex_type(void);
 
-void test_vertice_type_list(void);
+void test_vertices_type_list(void);
 
 void test_connected_components_vertices(void);
 

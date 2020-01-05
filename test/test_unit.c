@@ -47,10 +47,10 @@ int init_test(void){
 		( NULL == CU_add_test(pSuite, "Test dfs", test_dfs)) ||
 		( NULL == CU_add_test(pSuite, "Test if G is connected", test_if_connected)) ||
 		( NULL == CU_add_test(pSuite, "Test random graph", test_random_graph)) ||
-		( NULL == CU_add_test(pSuite, "Test vertice degree", test_vertice_degree)) ||
+		( NULL == CU_add_test(pSuite, "Test vertex degree", test_vertex_degree)) ||
 		( NULL == CU_add_test(pSuite, "Test number connected components", test_number_connected_components)) ||
-		( NULL == CU_add_test(pSuite, "Test get vertice type", test_get_vertice_type)) ||
-		( NULL == CU_add_test(pSuite, "Test vertice type list", test_vertice_type_list)) ||
+		( NULL == CU_add_test(pSuite, "Test get vertex type", test_get_vertex_type)) ||
+		( NULL == CU_add_test(pSuite, "Test vertices type list", test_vertices_type_list)) ||
 		( NULL == CU_add_test(pSuite, "Test edges list", test_edges_list)) ||
 		( NULL == CU_add_test(pSuite, "Test add edge", test_add_edge)) ||
 		( NULL == CU_add_test(pSuite, "Test remove edge", test_remove_edge)) ||
@@ -244,7 +244,7 @@ void test_clean_graph(void)
 	free_graph(g);
 }
 
-void test_vertice_degree(void)
+void test_vertex_degree(void)
 {
 	int size = 4;
 	/*
@@ -262,10 +262,10 @@ void test_vertice_degree(void)
 	Pgraph g = new_graph(size);
 	fill_graph(g,m,0);
 
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 0),2);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 1),2);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 2),3);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 3),1);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 0),2);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 1),2);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 2),3);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 3),1);
 
 	free_graph(g);
 }
@@ -698,7 +698,7 @@ void test_dfs(void)
 
 	int size = 10;
 	int density = 9;
-	Pgraph g = generate_random_graph(size,density);
+	Pgraph g = generate_random_graph(size,density,1);
 
 	test_connected(g);
 	CU_ASSERT_EQUAL(run_dfs(g),10);
@@ -738,7 +738,7 @@ void test_random_graph(void)
 	int size = 10;
 	int density = 9;
 	int edge_number = 0;
-	Pgraph g = generate_random_graph(size,density);
+	Pgraph g = generate_random_graph(size,density,1);
 
 	test_connected(g);
 	CU_ASSERT_EQUAL(test_connected(g),1);
@@ -780,15 +780,15 @@ void test_number_connected_components(void)
 	fill_graph(g,m,0);
 
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 0),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 0),1);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 0),1);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 1),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 1),1);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 1),1);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 2),4);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 2),4);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 2),4);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 3),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 3),1);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 3),1);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 4),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 4),1);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 4),1);
 
 	free_graph(g);
 
@@ -810,15 +810,15 @@ void test_number_connected_components(void)
 	fill_graph(g,m2,0);
 
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 0),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 0),1);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 0),1);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 1),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 1),1);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 1),1);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 2),3);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 2),3);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 2),3);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 3),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 3),1);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 3),1);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 4),2);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 4),2);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 4),2);
 
 	free_graph(g);
 
@@ -838,15 +838,15 @@ void test_number_connected_components(void)
 	fill_graph(g,m3,0);
 
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 0),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 0),1);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 0),1);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 1),2);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 1),2);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 1),2);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 2),2);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 2),2);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 2),2);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 3),2);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 3),2);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 3),2);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 4),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 4),1);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 4),1);
 
 	free_graph(g);
 
@@ -867,20 +867,20 @@ void test_number_connected_components(void)
 	fill_graph(g,m4,0);
 
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 0),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 0),2);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 0),2);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 1),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 1),2);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 1),2);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 2),2);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 2),4);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 2),4);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 3),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 3),2);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 3),2);
 	CU_ASSERT_EQUAL(run_dfs_connected_components(g, 4),1);
-	CU_ASSERT_EQUAL(get_vertice_degree(g, 4),2);
+	CU_ASSERT_EQUAL(get_vertex_degree(g, 4),2);
 
 	free_graph(g);
 }
 
-void test_get_vertice_type(void)
+void test_get_vertex_type(void)
 {
 	int size = 5;
 	/*
@@ -899,11 +899,11 @@ void test_get_vertice_type(void)
 	Pgraph g = new_graph(size);
 	fill_graph(g,m,0);
 
-	CU_ASSERT_EQUAL(get_vertice_type(g, 0),0);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 1),0);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 2),3);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 3),0);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 4),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 0),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 1),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 2),3);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 3),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 4),0);
 
 	free_graph(g);
 
@@ -924,11 +924,11 @@ void test_get_vertice_type(void)
 	g = new_graph(size);
 	fill_graph(g,m2,0);
 
-	CU_ASSERT_EQUAL(get_vertice_type(g, 0),0);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 1),0);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 2),3);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 3),0);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 4),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 0),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 1),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 2),3);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 3),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 4),0);
 
 	free_graph(g);
 
@@ -947,11 +947,11 @@ void test_get_vertice_type(void)
 	g = new_graph(size);
 	fill_graph(g,m3,0);
 
-	CU_ASSERT_EQUAL(get_vertice_type(g, 0),0);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 1),0);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 2),0);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 3),0);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 4),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 0),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 1),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 2),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 3),0);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 4),0);
 
 	free_graph(g);
 
@@ -971,16 +971,16 @@ void test_get_vertice_type(void)
 	g = new_graph(size);
 	fill_graph(g,m4,0);
 
-	CU_ASSERT_EQUAL(get_vertice_type(g, 0),1);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 1),1);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 2),2);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 3),1);
-	CU_ASSERT_EQUAL(get_vertice_type(g, 4),1);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 0),1);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 1),1);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 2),2);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 3),1);
+	CU_ASSERT_EQUAL(get_vertex_type(g, 4),1);
 
 	free_graph(g);
 }
 
-void test_vertice_type_list(void)
+void test_vertices_type_list(void)
 {
 	int size = 5;
 	/*
@@ -999,15 +999,15 @@ void test_vertice_type_list(void)
 	Pgraph g = new_graph(size);
 	fill_graph(g,m,0);
 
-	int *vertice_type_list = get_vertice_type_list(g);
+	int *vertices_type_list = get_vertices_type_list(g);
 
-	CU_ASSERT_EQUAL(vertice_type_list[0],0);
-	CU_ASSERT_EQUAL(vertice_type_list[1],0);
-	CU_ASSERT_EQUAL(vertice_type_list[2],3);
-	CU_ASSERT_EQUAL(vertice_type_list[3],0);
-	CU_ASSERT_EQUAL(vertice_type_list[4],0);
+	CU_ASSERT_EQUAL(vertices_type_list[0],0);
+	CU_ASSERT_EQUAL(vertices_type_list[1],0);
+	CU_ASSERT_EQUAL(vertices_type_list[2],3);
+	CU_ASSERT_EQUAL(vertices_type_list[3],0);
+	CU_ASSERT_EQUAL(vertices_type_list[4],0);
 
-	free(vertice_type_list);
+	free(vertices_type_list);
 	free_graph(g);
 
 	size = 5;
@@ -1027,15 +1027,15 @@ void test_vertice_type_list(void)
 	g = new_graph(size);
 	fill_graph(g,m2,0);
 
-	vertice_type_list = get_vertice_type_list(g);
+	vertices_type_list = get_vertices_type_list(g);
 
-	CU_ASSERT_EQUAL(vertice_type_list[0],0);
-	CU_ASSERT_EQUAL(vertice_type_list[1],0);
-	CU_ASSERT_EQUAL(vertice_type_list[2],3);
-	CU_ASSERT_EQUAL(vertice_type_list[3],0);
-	CU_ASSERT_EQUAL(vertice_type_list[4],0);
+	CU_ASSERT_EQUAL(vertices_type_list[0],0);
+	CU_ASSERT_EQUAL(vertices_type_list[1],0);
+	CU_ASSERT_EQUAL(vertices_type_list[2],3);
+	CU_ASSERT_EQUAL(vertices_type_list[3],0);
+	CU_ASSERT_EQUAL(vertices_type_list[4],0);
 
-	free(vertice_type_list);
+	free(vertices_type_list);
 	free_graph(g);
 
 	size = 5;
@@ -1053,15 +1053,15 @@ void test_vertice_type_list(void)
 	g = new_graph(size);
 	fill_graph(g,m3,0);
 
-	vertice_type_list = get_vertice_type_list(g);
+	vertices_type_list = get_vertices_type_list(g);
 
-	CU_ASSERT_EQUAL(vertice_type_list[0],0);
-	CU_ASSERT_EQUAL(vertice_type_list[1],0);
-	CU_ASSERT_EQUAL(vertice_type_list[2],0);
-	CU_ASSERT_EQUAL(vertice_type_list[3],0);
-	CU_ASSERT_EQUAL(vertice_type_list[4],0);
+	CU_ASSERT_EQUAL(vertices_type_list[0],0);
+	CU_ASSERT_EQUAL(vertices_type_list[1],0);
+	CU_ASSERT_EQUAL(vertices_type_list[2],0);
+	CU_ASSERT_EQUAL(vertices_type_list[3],0);
+	CU_ASSERT_EQUAL(vertices_type_list[4],0);
 
-	free(vertice_type_list);
+	free(vertices_type_list);
 	free_graph(g);
 
 		size = 5;
@@ -1080,15 +1080,15 @@ void test_vertice_type_list(void)
 	g = new_graph(size);
 	fill_graph(g,m4,0);
 
-	vertice_type_list = get_vertice_type_list(g);
+	vertices_type_list = get_vertices_type_list(g);
 
-	CU_ASSERT_EQUAL(vertice_type_list[0],1);
-	CU_ASSERT_EQUAL(vertice_type_list[1],1);
-	CU_ASSERT_EQUAL(vertice_type_list[2],2);
-	CU_ASSERT_EQUAL(vertice_type_list[3],1);
-	CU_ASSERT_EQUAL(vertice_type_list[4],1);
+	CU_ASSERT_EQUAL(vertices_type_list[0],1);
+	CU_ASSERT_EQUAL(vertices_type_list[1],1);
+	CU_ASSERT_EQUAL(vertices_type_list[2],2);
+	CU_ASSERT_EQUAL(vertices_type_list[3],1);
+	CU_ASSERT_EQUAL(vertices_type_list[4],1);
 
-	free(vertice_type_list);
+	free(vertices_type_list);
 	free_graph(g);
 }
 
@@ -1464,10 +1464,10 @@ void test_saturer(void){
 	fill_graph(g,m,0);
 	Pgraph tree = new_graph(size1);
 	int v = 3;
-	int *vertice_type_list = get_vertice_type_list(g);
+	int *vertices_type_list = get_vertices_type_list(g);
 	int *weight_list = get_weight_list(g);
 
-	saturer(g,tree,v,vertice_type_list,weight_list);
+	saturer(g,tree,v,vertices_type_list,weight_list);
 
 	CU_ASSERT_EQUAL(weight_list[0],1);
 	CU_ASSERT_EQUAL(weight_list[1],1000);
@@ -1476,7 +1476,7 @@ void test_saturer(void){
 	CU_ASSERT_EQUAL(weight_list[4],1000);
 	CU_ASSERT_EQUAL(weight_list[5],1000);
 
-	free(vertice_type_list);
+	free(vertices_type_list);
 	free(weight_list);
 	free_graph(tree);
 	free_graph(g);
@@ -1579,7 +1579,7 @@ void test_changer_type(void){
 
 	Pgraph g = new_graph(size1);
 	fill_graph(g,m,0);
-	int *vertice_type_list = get_vertice_type_list(g);
+	int *vertices_type_list = get_vertices_type_list(g);
 	int *weight_list = get_weight_list(g);
 	int **edges_list = get_edges_list(g);
 	int size = g->edges_number;
@@ -1604,9 +1604,9 @@ void test_changer_type(void){
 	Pgraph tree = new_graph(size1);
 	fill_graph(tree,m2,0);
 
-	changer_type(g,tree,3,vertice_type_list,weight_list,edges_list,size);
+	changer_type(g,tree,3,vertices_type_list,weight_list,edges_list,size);
 
-	CU_ASSERT_EQUAL(vertice_type_list[3],3);
+	CU_ASSERT_EQUAL(vertices_type_list[3],3);
 	CU_ASSERT_EQUAL(weight_list[0],1);
 	CU_ASSERT_EQUAL(weight_list[1],-2);
 	CU_ASSERT_EQUAL(weight_list[2],1);
@@ -1616,7 +1616,7 @@ void test_changer_type(void){
 	CU_ASSERT_EQUAL(weight_list[6],1);
 
 	free_matrix(edges_list,size);
-	free(vertice_type_list);
+	free(vertices_type_list);
 	free(weight_list);
 	free_graph(tree);
 	free_graph(g);

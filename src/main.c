@@ -64,84 +64,57 @@ int main()
 
 	printf("QUESTION 5 :\n\n");
 
-	// int tab_size[6] = {20,50,100,400,600,1000};
-	int tab_size[6] = {10,20,30,40,50,60};
+	int tab_size[6] = {20,50,100,400,600,1000};
 	int i,density;
+	Pgraph graph_tab[6];
 
 	for (i = 0; i < 6; i++)
 	{
 		density = compute_density_formula(tab_size[i]);
 		printf("La densité d'un graphe de taille %d est : %d\n",tab_size[i],density);
-		Pgraph gr = generate_random_graph(tab_size[i],density);
-		// printf("number reached : %d\n", run_dfs(gr));
-		// print_graph(gr,1);
-		free_graph(gr);
+		Pgraph gr = generate_random_graph(tab_size[i],density,1);
+		print_graph(gr,1);
+		graph_tab[i] = gr;
 	}
+
 
 	printf("\n##########################################################\n");
 	printf("########## 2.Résolution approchée (heuristique) ##########\n");
 	printf("##########################################################\n\n");
 
-	size = 9;
-	/*
-	 * 0-1-2
-	 * |.|.|
-	 * 3-4-5
-	 * |.|.|
-	 * 6-7-8
-	 *
-	 */
-	int m2[9][9] = {
-	{0,1,0,1,0,0,0,0,0},
-	{1,0,1,0,1,0,0,0,0},
-	{0,1,0,0,0,1,0,0,0},
-	{1,0,0,0,1,0,1,0,0},
-	{0,1,0,1,0,1,0,1,0},
-	{0,0,1,0,1,0,0,0,1},
-	{0,0,0,1,0,0,0,1,0},
-	{0,0,0,0,1,0,1,0,1},
-	{0,0,0,0,0,1,0,1,0}};
 
-	g = new_graph(size);
-	fill_graph(g,m2,0);
-	print_graph(g,1);
+	for (i = 0; i < 6; i++){
+		Pgraph tree = MBVST(graph_tab[i]);
+		if (i==0){
+			print_graph(tree,1);
+		}
 
-	Pgraph tree = MBVST(g);
-
-	print_graph(tree,1);
-	print_edges(tree);
-
-	free_graph(tree);
-	free_graph(g);
+		printf("branch vertices : %d\n",get_branch_vertex_number(tree));
+		free_graph(tree);
+	}
 
 	printf("\n##########################################################\n");
 	printf("################### 3.Résolution exacte ###################\n");
 	printf("##########################################################\n\n");
 
-	size=9;
 
-	int m3[9][9] = {
-	{0,1,0,1,0,0,0,0,0},
-	{1,0,1,0,1,0,0,0,0},
-	{0,1,0,0,0,1,0,0,0},
-	{1,0,0,0,1,0,1,0,0},
-	{0,1,0,1,0,1,0,1,0},
-	{0,0,1,0,1,0,0,0,1},
-	{0,0,0,1,0,0,0,1,0},
-	{0,0,0,0,1,0,1,0,1},
-	{0,0,0,0,0,1,0,1,0}};
+	int res;
 
-	g = new_graph(size);
-	fill_graph(g,m3,0);
+	for (i = 0; i < 6; i++){
+		res = run_lp(graph_tab[i]);
+		printf("branch vertices : %d\n",res);
+	}
 
-	// density = compute_density_formula(size);
-	// g = generate_random_graph(size,density);
-	// print_graph(g,0);
-	// tree = MBVST(g);
-	// print_graph(tree,0);
-	run_lp(g);
 
-	free_graph(g);
-	// free_graph(tree);
+	printf("\n##########################################################\n");
+	printf("####################### FREE TIME ! #######################\n");
+	printf("##########################################################\n\n");
+
+
+	for (i = 0; i < 6; i++){
+		free_graph(graph_tab[i]);
+	}
+
+
 	return 0;
 }

@@ -42,19 +42,19 @@ typedef struct graph {
 
 
 /**
- * This function returns the degree of a vertice of G
+ * This function returns the degree of a vertex of G
  * @param  g       The graph G.
- * @param  vertice The vertice we want to get the degree.
- * @return         The degree of the vertice.
+ * @param  vertex  The vertex we want to get the degree.
+ * @return         The degree of the vertex.
  */
-int get_vertice_degree(Pgraph g, int vertice);
+int get_vertex_degree(Pgraph g, int vertex);
 
 /**
  * This function returns the sum of all degrees
- * @param  g [description]
- * @return   [description]
+ * @param  g The graph G.
+ * @return   The sum of all degrees
  */
-int get_vertice_degree_sum(Pgraph g);
+int get_vertices_degree_sum(Pgraph g);
 
 /**
  * This function returns the number of vertices of the graph G.
@@ -94,8 +94,8 @@ int** get_edges_list(Pgraph g);
 /**
  * This function computes the index of an edge on the edges list.
  * @param  l    The edges list.
- * @param  i    The first vertice of the edge.
- * @param  j    The second vertice of the edge.
+ * @param  i    The first vertex of the edge.
+ * @param  j    The second vertex of the edge.
  * @param  size The size of the edges list.
  * @return      The index of (i,j) on l or -1 if (i,j) does not exist.
  */
@@ -120,16 +120,16 @@ int find_min_weight_edges(int* selected_edges_list, int *weight_list, int size);
 /**
  * This function adds an edge to the graph G.
  * @param g The graph G.
- * @param i The first vertice of the edge.
- * @param j The second vertice of the edge.
+ * @param i The first vertex of the edge.
+ * @param j The second vertex of the edge.
  */
 void add_edge(Pgraph g, int i, int j);
 
 /**
  * This function removes an edge to the graph G.
  * @param g The graph G.
- * @param i The first vertice of the edge.
- * @param j The second vertice of the edge.
+ * @param i The first vertex of the edge.
+ * @param j The second vertex of the edge.
  */
 void remove_edge(Pgraph g, int i, int j);
 
@@ -137,8 +137,8 @@ void remove_edge(Pgraph g, int i, int j);
  * This function returns if an edge is on a graph or not.
  * @param  edges_list The list of edges of the graph.
  * @param  size       The number of edges.
- * @param  i          The first vertice of the edge.
- * @param  j          The second vertice of the edge.
+ * @param  i          The first vertex of the edge.
+ * @param  j          The second vertex of the edge.
  * @return            This function returns i if edge (i,j) in on edge_list[i],
  *                    -1 otherwise.
  */
